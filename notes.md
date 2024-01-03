@@ -294,3 +294,283 @@ Finalizamos a Aula 1!
 Mal começamos e já aprendemos muito! E aí, o que está achando? Conta pra gente lá no fórum ou no Discord da Alura!
 
 Te vejo na próxima aula!
+
+#### 03/01/2024
+
+@02-Realizando testes de unidade
+
+@@01
+Projeto da aula anterior
+PRÓXIMA ATIVIDADE
+
+Caso queira, você pode baixar o projeto do curso no ponto em que paramos na aula anterior.
+
+@@02
+Utilizando test()
+
+[00:00] Agora nós podemos começar a trabalhar na produção de testes no Flutter, e por onde que nós começamos?
+[00:09] Vamos lá, nós abrimos o nosso projeto e, à esquerda, como nós já conhecemos, temos os nosso diretórios do projeto inteiro. Nós temos aqui, por exemplo, a nossa pasta lib onde nós programamos o projeto em dart, criamos as nossas telas. Temos um main.dart.
+
+[00:27] Eu vou fechar, eu vou minimizar a lib e, se você der uma olhada, duas pastas abaixo tem uma pasta chamada test e é nela que vamos trabalhar agora.
+
+[00:36] Se você notar, essa pasta test tem uma seta laranja para esquerda junto com o uma seta verde para a direita. Vou abri-la, rapidinho, e dentro dela já temos um test. De onde que veio esse test?
+
+[00:50] Bom, quando nós criamos o nosso projeto inicial, lembra aquele projeto do contado básico do Flutter? Pois é, já vem com teste específico para esse projeto. Então, já tem um teste experimentando os contadores, adicionar coisas.
+
+[01:05] Mas nós não vamos ficar vendo esse teste aqui, não é o que nós queremos. Então, o que eu vou fazer aqui? Deletar esse arquivo, porque nós não vamos usar.
+
+[01:15] Beleza, dento da pasta test é onde nós vamos trabalhar. Por onde nós começamos? Nós vamos testar uma coisa simples, como coisa básica primeiro.
+
+[01:25] Vamos começar com testes de unidade e o que nós vamos testar nesse teste de unidade? Uma classe simples, que vai ser a classe bank model que nós vimos agora pouco, mas vamos dar uma recapitulada nela.
+
+[01:38] Antes de começar a criar esse teste, nós temos que criar o arquivo. Então, para criar o eu vou clicar com o botão direito do mouse na pasta test, vamos no New e, em seguida, Dart file.
+
+[01:49] Vou criar um novo arquivo Dart e vou chamar de bank_model_test. É muito essencial que os seus testes tenham nome bem tranquilo de entender.
+
+[02:00] Beleza, nós já temos aqui o nosso arquivo de teste. Por onde que nós vamos? Primeiro vamos dar uma olhada no nosso bank model para ter certeza de como ele funciona?
+
+[02:09] Vou aqui na lib, lado esquerdo da tela, e vou aqui no models, pasta models, e dentro dela nós temos o nosso bank.dart. O bank.dart nada mais é do que uma classe, uma classe que tem quatro componentes, quatro doubles aqui, available, spent, earned e points.
+
+[02:27] Valores que começam em zero e nós temos dois métodos, o deposit e o transfer. O deposit adiciona valor no nosso available, earned e points e o transfer retira valor de available, adiciona valor em points e adiciona valor em spent.
+
+[02:43] Só para vocês recapitularem, no nosso projeto, quando eu clico em deposit ele deposita, portanto o earned sobe, o available sobe, os pontos sobem.
+
+[02:54] Se eu clicar em transfer o spent sobe, o available desce e o points sobe. Assim como está bem explicadinho nos nossos métodos.
+
+[03:04] Beleza, nós já sabemos que isso aqui está funcionando, mas como que nós testamos isso aqui? Como é que nós garantimos que isso aqui vai estar sempre funcionando, independente, das modificações futuras?
+
+[03:15] Primeiro, vamos voltar lá no nosso bank model e vamos começar como qualquer arquivo em dart. Nós precisamos de uma main, então, eu vou criar uma void main () {} parênteses e chaves.
+
+[03:33] A nossa função padrão. Então, para começar a fazer os testes, primeiro nós temos que importar algumas funções de testes especificamente. Eu vou vir escrever im, ele já vai me habilitar para autopreenchimento, então, se eu clicar no botão "Tab", ele preenche para mim.
+
+[03:50] Eu vou escrever flutter_test, underline test, ele já vai dizer para mim qual é o pacote que eu posso adicionar. Então, eu vou aqui e apertar o botão "Tab" e vai importar para mim todo esse pacote de testes.
+
+[04:04] Beleza, nós já temos o nosso pacote importante, já temos a nossa void main, tranquilo. Se vocês estiverem tendo alguma dificuldade em algum ponto, vocês podem falar conosco no fórum.
+
+[04:16] Por onde nós começamos? Tem uma função teste que já facilita os nossos testes simples. Eu vou dentro da main, na linha 3, e vou escrever test. É uma função básica que apertei o botão "Tab" para ele autopreencher e ela precisa de duas coisas, uma descrição e um body.
+
+[04:36] Tem alguns outros detalhes, por exemplo, test on, type out, skip tags. Nós não vamos focar nelas, mas se você quiser dar uma explora, sinta-se à vontade.
+
+[04:46] Inicialmente nós vamos só focar no body e na descrição. Quando nós estamos falando de descrição, significa que o nosso teste precisa, como se fosse uma mini documentação do próprio teste.
+
+[04:56] Ele espera uma string e nessa string nós precisamos colocar informações sobre o nosso teste. Que tipo de informação esse nosso teste precisa?
+
+[05:06] Quando nós estamos criando uma bela descrição nós precisamos de três coisa. Nós precisamos do nome do método que nós vamos testar, nós precisamos de cenário onde está sendo testado e nós precisamos do resultado, tudo isso no nome.
+
+[05:19] Isso é uma convenção de nomenclatura de teste. A ordem específica que você vai colocar, eu não vou te obrigar, existem várias ordens de nomenclatura. Você não precisa se preocupar, a única coisa que você precisa se preocupar é que tem que ter essas três coisas. O local, o método e o resultado.
+
+[05:39] Vamos lá, o que nós estamos testando? Nós estamos testando o nosso bank model. O que explicitamente nós queremos testar primeiro? Eu acho que eu vou testar, de todas essas coisas, eu quero testar o nosso deposit. Vou testar esse método deposit.
+
+[05:54] E qual que seria o resultado? Vamos lá, eu quero testar esse deposit, eu vou testar uma quantidade de valor 10, vou colocar 10 de dinheiro nesse deposit e eu espero que os meus pontos subam para 10, pontos de 0 vão para 10 quando eu der o deposit.
+
+[06:11] Vamos ver. Então, eu vou aqui em 'Bank model deposit should be 10'. Essa é a nossa descrição. Estou falando que o nosso modelo de banco, quando eu depositar, deve ter um valor de 10.
+
+[06:30] E agora nós temos a nossa descrição e nós precisamos trabalhar no body desse teste, no corpo desse teste e o body desse teste nós precisamos de uma função anônima, uma função abre e fecha parênteses, abre e fecha colchetes, na linha 3.
+
+[06:45] Só para nós não termos problemas, eu vou colocar ponto e vírgula no final da linha 3 e teste.
+
+[06:49] Então, a princípio o nosso teste só tem descrição, não tem nenhum função sendo feita. O que nós precisamos? Nós precisamos, primeiramente, criar, instanciar o nosso banco.
+
+[06:58] Eu vou criar um final e o nome dele vai ser final bank e o que ele vai ser? Ele vai ser um final bank = BankModel, um bank model. Pronto, criei um modelo de banco, um widget, um objeto.
+
+[07:13] E o que eu quero fazer com esse bank? Eu quero vir no nosso bank e eu quero depositar. Vamos lá bank.deposit, eu vou acessar esse nosso método e esse nosso método espera um valor double de dinheiro para ser depositado.
+
+[07:31] Então, eu vou colocar 10, porque nós estamos esperando 10. Beleza, até aí tranquilo, ponto e vírgula, na linha, 6 para finalizar.
+
+[07:38] Então, até agora nós não tivemos nenhum problema no nosso teste. Nós criamos o modelo, nós estamos usando o deposit, mas como é que nós vamos saber que o valor foi depositado corretamente?
+
+[07:51] Nós temos que visualizar se as nossas outras informações foram alteradas e para isso nós precisamos entender um pouco da função expect, que é o que nós vamos ver daqui a pouco.
+
+@@03
+Para saber mais: principais convenções de nomes
+PRÓXIMA ATIVIDADE
+
+Acabamos de criar nosso primeiro teste! Uhull! Mas é o seguinte: vimos que a descrição é parte importante do teste, e que precisamos essencialmente de três informações nessa descrição:
+Local;
+Método;
+Resultado.
+Mas qual a ordem correta? Como posso me orientar melhor nesse assunto?
+Para te ajudar mais nesse tema, separei um artigo do Macoratti que explica o quais as convenções de nomenclatura e o porque de todas elas!
+
+Legal? 5 minutos de leitura apenas, acho que você vai curtir!
+
+https://www.macoratti.net/20/12/net_unitconv1.htm
+
+@@04
+Utilizando expect()
+
+[00:00] Agora nós já estamos criando os nossos testes, mas faltou um detalhe. Nós precisamos comparar os valores que estamos esperando com os valores que nós temos e se esses valores forem iguais, acabou.
+[00:15] O que precisamos aqui? Precisamos usar uma nova função chamada expect, essa função também é do teste e ela precisa, primariamente, de duas coisas, ela precisa de um actual e de um matcher.
+
+[00:29] O que vamos colocar aqui no nosso actual? Um valor atual, o que ele está buscando. Então, nós precisamos vir aqui no nosso bank, que nós criamos, que nada mais é do que um bank model. Buscando por bank., podemos acessar várias coisas. O points, o available, o earned, o spent.
+
+[00:46] Vou verificar no points, porque ele é bem simples, ele sempre vai ser adicionado.
+
+[00:50] Então, eu vou vir na linha 7, bank.points e precisamos adicionar um matcher. O que é esse matcher? Matcher é um valor que nós esperamos. Qual é o valor que estamos esperando nesse points? Estamos esperando 10, porque nós depositamos 10 dinheiros no nosso banco.
+
+[01:07] Então, na linha 7, é o nosso matcher 10 e o que isso significa? Afinal, o que significa tudo isso? Nós criamos um modelo, nós usamos um método de adicionar 10 e nós estamos visualizando, verificando se os nossos pontos, realmente, estão valendo 10.
+
+[01:27] Vamos ver se esse teste está passando? Para eu ver se o teste está passando, eu posso clicar aqui no nosso botão verde na parte superior à esquerda e clicar no botão Run, no botão verde à esquerda do número 4. Clicar no botão Run e ele vai verificar para mim se o teste é passável, ou seja, se o valor de pontos é realmente 10.
+
+[01:48] Vamos ver se isso aqui está funcionado. Os primeiros testes são mais lentos, mas depois ele passa bem rápido.
+
+[01:54] Olha só, deu a seta verde falando que o teste passou. Então é muito fácil, por enquanto está bem fácil. O que acontece, por exemplo, se eu vier aqui e trocar de 10 para 11 e tentar passar esse teste?
+
+[02:09] O ideal é que não passe. Vamos ver se ele vai passar ou não? Não passou. O que acontece? O que ele fala para nós se o nosso teste não passar? Olha que maravilha que são os testes. Ele veio aqui e falou para nós Bank model deposit should be 10 e ele vem e fala aqui para nós que está esperando 11, mas achou apenas 10.
+
+[02:33] Então, ele já dá uma noção para nós do que está errado. Eu vou voltar para o nosso 10 e se por algum acaso eu quiser testar outra coisa do nosso bank. No nosso bank, nós não temos só o nosso points, temos o available, nós temos spent, nós temos earned.
+
+[02:51] Se eu tentar buscar esse valor no spent? Vamos verificar, de novo, no nosso bank model. Quando eu deposito, o valor de spent e não muda, só muda o valor de available, earned e points. Então, se eu tentar esperar um valor de spent igual a 10, o ideal é que o nosso teste não passe.
+
+[03:18] Então, vamos tentar de novo, dessa vez eu cliquei aqui no nosso void main para testar todos os nossos testes de uma vez e também não vai passar, porque ele estava esperando 10 e o valor atual de gasto, de spent é 0.
+
+[03:32] O ideal é que deixemos o nosso teste fixo. Então, é para nós visualizarmos apenas o nosso points, mas visualizando o que nós estamos esperando o nosso valor de points ser igual a 10, já dá para notar que a nossa descrição não está tão boa.
+
+[03:55] O nosso Bank model deposit should be 10. Não é isso que queremos. Não é isso que estamos fazendo. Nós estamos verificando se o points é igual a 10.
+
+[04:07] Então, Bank model deposit should turn points into 10, ou seja, nós estamos fazendo com que o nosso depósito do bank model transforme o valor de pontos em 10.
+
+[04:28] Sim, descrições têm que ser longas, às vezes, é melhor você produzir nomes mais simples, mas se você não conseguir, podem ser nomes longos, não tem problema, o importante é que seja fácil de verificar.
+
+[04:39] Então, o nosso teste está bem tranquilo, vou voltar aqui no nosso botão Run que vai visualizar todos os nossos mands e é simples assim? É simples assim, mas o poder do teste é muito maior do que simplesmente alterar os testes em si.
+
+[04:56] O que acontece se eu alterar lá no bank? O que acontece se eu vier em bank.dart? Vamos supor que você está criando uma nova feature no seu projeto, no seu banco e dessa vez a quantidade de pontos em vez de ser só a quantidade de dinheiro que está entregada, vai ser "2 x money".
+
+[05:23] Você adicionou 10, depositou 10 dinheiros, você vai ganhar 20 pontos. Você vez essa implementação, você mudou isso, significa que os testes que estão esperando um valor vão todos falhar e isso é ótimo, porque significa que quem está dependente desses pontos não vai ser pego de surpresa, porque o teste está esperto por nós.
+
+[05:49] Então, estávamos esperando 10, mas virou 20, porque lá atrás nós decidimos mudar o nosso bank, sem lembrar que temos outras dependências em relação aos nossos pontos.
+
+[06:01] Então, é bom ficarmos ligados no porquê de os testes fazerem tão bem para nós.
+
+[06:05] Muito simples, muito tranquilo criar um teste básico com o nosso teste inicial unitário, mas não precisamos fazer só um teste, só testar uma coisa. Podemos testar várias coisas do nosso bank model, que é exatamente o que eu quero fazer com vocês na próxima aula.
+
+@@05
+Testando o BankModel
+
+[00:00] Bom, agora nós já sabemos testar o depósito do nosso banco e nós precisamos um pouco mais de experiencia, de prática. Então, vamos testar outras coisas no nosso bank model
+[00:13] Para isso eu vou diminuir o nosso resultado de testes. Nosso resultado de teste, agora, deve estar passando completamente, vamos só verificar se está tudo passando, porque arrumamos tudo na última aula, só não testamos de novo.
+
+[00:30] Beleza, teste passou, 1 de 1. Vamos criar um outro teste. Depois do nosso teste final aqui na linha 8, eu vou criar um novo teste e dessa vez nós queremos testar a transferência, por exemplo.
+
+[00:46] Então, 'Bank model transfer should turn points into 10', mesmo resultado, porque a transferência também adiciona pontos, vamos verificar. A transferência, nos pontos, adiciona o valor de money e nós queremos o valor de 10, porque foi uma convenção nossa, pode ser 100 aqui se nós quisermos.
+
+[01:12] Vamos ter que mudar o valor do deposito, no nosso método deposit. Então, o mesmo esquema, nós temos a descrição, vamos para o body. Vou na linha 9 e criar a nossa função anônima, eu vou codar o ponto e vírgula para ele parar de marcar erro. Aqui dentro vamos criar, mais uma vez vamos instanciar o nosso bank model.
+
+[01:34] "Por que temos que instanciar, de novo, o nosso bank model? Não faz sentido". Bom, ele não pode ser reutilizado de outro lugar, então, se eu decidir simplesmente vir aqui, vou comentar essa linha 10, só para vocês verem.
+
+[01:50] Vou comentar essa linha 10, o bank foi criado, se eu quiser, simplesmente vir aqui bank.transfer, ele nem sabe o que fazer, porque ele não sabe o que é bank. Ele realmente não sabe o que é bank. Está até vermelho, na linha 11, nome indefinido, ele não vai pegar uma instancia que foi criar em outro teste.
+
+[02:09] Então, importante esses detalhes de criação de instancias de variáveis ou de objetos.
+
+[02:16] Beleza, nós temos aqui o nosso bank model, criado o nosso bank.transfer. Precisa de quê? Precisa de um valor, eu vou colocar o 10, porque é a nossa convenção. É a mesma coisa, agora nós precisamos verificar o nosso expect para ver se está funcionando direito.
+
+[02:33] Então, vou na linha 12 no (actual), ele está procurando bank.points e o (matcher) tem que ser o quê? Tem que ser 10, obviamente, tem que ser 10. Vamos verificar se está dando certo?
+
+[02:49] Vamos lá, apertei o botão Run, vamos ver se ele está realmente encontrando o nosso valor em 10. O teste passou, poxa, muito tranquilo e nós poderíamos ir testando várias e várias coisas do nosso bank model.
+
+[03:04] O ideal é que você deixe o seu testes de bank model apenas nesse documento, nesse nosso arquivo .dart de model, apenas.
+
+[03:13] "Poxa, Kako, mas eu quero rodar os dois testes ao mesmo tempo. Eu vou precisar rodar um de cada vez?". Bom, você pode vir aqui e rodar o main que roda todos os testes que estão dentro da função main e verificar se está tudo passando.
+
+[03:29] "Que legal. Eu tenho outra dúvida", vocês são cheios de dúvidas, pode perguntar à vontade, inclusive, o fórum está lá para isso, pode perguntar. Então, temos mais uma dúvida e se nós tivermos um conjunto de testes que queremos testar separadamente?
+
+[03:46] Por exemplo, eu vou criar mais alguns testes aqui. Acho que o teste a linha 4 está vermelho, porque não passou uma vez. Então, eu vou criar mais um teste, na linha 14, vou criar uns testes.
+
+[04:01] Descrição desse teste, em vez do valor de points, eu quero verificar se o valor de available está correto. Eu vou aqui, 'Bank model deposit should turn available into 10', mais ou menos isso, tem que escrever direitinho.
+
+[04:33] Então, vamos fazer de novo, a mesma coisa, o nosso body, ponto de virgula depois para ele não chorar e eu vou vir de novo e criar o nosso final bank. Agora aqui eu não preciso ir devagar, porque vocês já estão entendendo o que está acontecendo.
+
+[04:49] Eu vou no deposito. Exatamente, eu já estava me atropelando aqui. Vamos lá, bank.deposit(10). Money, estou depositando 10 dinheiros e agora que eu tenho que esperar, expect, estamos esperando, agora sim eu vou colocar bank.available e o matcher tem que ser 10.
+
+[05:24] Então, eu vou verificar o nosso bank, vamos ver se passa esse teste. O ideal é que passe, que nós sabemos que quando nós depositamos, o available sobre 10, mas agora eu quero testar todos os que estão em deposit ao mesmo tempo.
+
+[05:38] Eu quero meio que agrupá-los, como é que eu os agrupo? Primeira coisa que nós temos que fazer é deixar os testes que nós queremos agrupar um em sequência do outro.
+
+[05:46] Então, vou selecionar o nosso teste na linha 16 a linha 20, apertar os botões "Ctrl + X" para retirar e eu vou colocá-lo logo em seguida do nosso outro teste de deposito, onde está testando o deposito no points
+
+[05:58] Testou os points aqui, estou testando o available ao mesmo tempo, mas eu quero que os dois rodem ao mesmo tempo sem testar o transfer. Tem como fazer isso?
+
+[06:09] Tem como com uma função chamada group. Vou aqui antes do teste, do nosso primeiro teste na linha 5, e apertar o botão Enter. Agora eu vou na linha 6 group e ele já cria para nós uma descrição e um body, e dentro desse body nós vamos colocar os nossos testes.
+
+[06:25] Então, deixa eu colocar um ponto e vírgula só para ele não chorar e no nosso description. Eu vou aqui falar 'Bank Model Deposit Tests'. Coloquei tudo em maiúscula e nem precisava. Então, eu vou vir aqui, 'Bank model deposit tests'.
+
+[06:43] Dentro desse grupo eu posso colocar vários testes que têm a ver com o nosso depósito. Então, eu vou na linha 9 até a linha 18 e selecionar o nosso teste de pontos e o nosso teste de available. Vou apertar os botões "Ctrl + X", deixar apenas o nosso teste de transferência lá fora, e dentro do group, na nossa linha 7, eu vou apertar os botões "Ctrl + V" e colocar todos os testes ao mesmo tempo.
+
+[07:05] Então, só para vocês terem certeza de que tudo está dando certo. Nós temos, na linha 6, um grupo com duas setas, o significa que nós vamos testar vários testes de uma vez.
+
+[07:17] Então, se eu clicar nele para dar um Run, nós vamos ver que ele vai passar dois testes. Opa, mas nós temos três testes e nós podemos só ter certeza de que temos todos os testes funcionando, se nós rodarmos o nosso void main que vai testar o grupo e ainda o teste que está lá fora. Então, serão três testes.
+
+[07:36] Legal, nós podemos brincar com isso. Tem muitas coisas que o nosso bank model que podemos testar, fiquem à vontade. O ideal mesmo é, em grandes projetos, você testar absolutamente tudo.
+
+[07:48] Então, você tem que testar o spent, tem que estar o available do transfer, tem que testar o earned do deposit. Teste tudo que os métodos estão fazendo para ter certeza.
+
+[07:59] Porque se no futuro alguém vier e alterar o seu método, os testes vão acusar e isso é qualidade de projeto, porque você não vai ter dor de cabeça para descobrir o que deu errado, o teste te fala o que deu errado, olha que maravilha.
+
+[08:15] Era isso que eu queria passar para vocês nesse vídeo, muito obrigo e vejo vocês daqui a pouco.
+
+@@06
+Função expect()
+PRÓXIMA ATIVIDADE
+
+Aprendemos a produzir um teste e vimos que ele precisa de uma descrição e de um corpo, no qual temos os métodos que desejamos testar, porém precisamos usar uma função chamada expect() que espera por um resultado.
+A função expect() precisa de um actual e de um matcher. Qual a responsabilidade de cada um respectivamente?
+
+O actual é um objeto genérico disponibilizado pelo pacote test e o matcher é o objeto do nosso projeto.
+ 
+Alternativa correta
+O actual é o valor da variável atual e o matcher é o valor esperado dessa variável.
+ 
+Corretíssimo! No primeiro, devemos colocar a variável que desejamos comparar e, no segundo, indicamos o valor que esperamos dessa variável após a utilização dos métodos. Assim, garantimos que nosso projeto está seguindo nossos desejos a todo instante.
+Alternativa correta
+O actual é sempre uma String e o matcher é sempre um int.
+ 
+Alternativa correta
+O actual é o valor da variável no passado, enquanto o matcher é o novo valor dessa variável.
+
+@@07
+Faça como eu fiz: testando 1, 2, 3
+PRÓXIMA ATIVIDADE
+
+Chegou a hora de testar seu conhecimento!
+Vamos criar um novo teste para seu aplicativo, para isso siga nosso passo a passo:
+
+Crie um novo arquivo na pasta test;
+Produza um teste com uma boa descrição;
+Teste o máximo que conseguir da Classe que escolheu testar;
+(lembre-se não existem testes demais);
+Faça grupos de testes!
+Vamos lá?
+
+O objetivo desta atividade é estimular você a produzir vários testes no seu aplicativo.
+Um exemplo de código que poderia ser testado é o caso do “Spent” quando usamos o método transfer():
+
+test('Bank model transfer should turn Spent into 10', (){
+  final bank = BankModel();
+  bank.transfer(10);
+  expect(bank.spent, 10);
+});COPIAR CÓDIGO
+Com muitos testes, você vai notar que: muitas classes e métodos estão conectados, e fazer alterações no seu projeto vai ser um trabalho menos exaustivo, pois os testes vão te guiar nas dependências entre objetos.
+Caso tenha alguma dúvida, chame a gente no fórum!
+
+@@08
+O que aprendemos?
+PRÓXIMA ATIVIDADE
+
+E aí? Pronta(o) para revisar?! Acabamos de ver alguns novos conceitos úteis para produzir aplicativos com qualidade no Flutter:
+Pasta Test:
+Existe uma pasta, em nosso projeto, destinada apenas aos testes que faremos em nosso aplicativo. Essa pasta já possui um teste padrão que vem junto com o projeto inicial. É imprescindível que os testes sejam criados nela.
+
+test():
+Função herdada do pacote de testes do Flutter, que permite a iniciação de um teste simples de unidade. Ele pede por uma descrição (que precisa ser bem estruturada) e por um body (que é responsável pelas ações do teste).
+
+expect():
+Método usado dentro do test() para comparar o valor da variável e o valor esperado por essa variável. Para isso, precisamos usar o actual e o matcher.
+
+group():
+Método que agrupa diversos testes, para facilitar quando precisamos rodar diversos testes juntos, facilitando a produção.
+
+Finalizamos a Aula 2!
+
+Estamos evoluindo bem no conteúdo de testes no Flutter! E aí, o que está achando? Conta pra gente lá no fórum ou no Discord da Alura!
+
+Te vejo logo, logo!
