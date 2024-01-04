@@ -301,7 +301,6 @@ Te vejo na próxima aula!
 
 @@01
 Projeto da aula anterior
-PRÓXIMA ATIVIDADE
 
 Caso queira, você pode baixar o projeto do curso no ponto em que paramos na aula anterior.
 
@@ -383,7 +382,6 @@ Utilizando test()
 
 @@03
 Para saber mais: principais convenções de nomes
-PRÓXIMA ATIVIDADE
 
 Acabamos de criar nosso primeiro teste! Uhull! Mas é o seguinte: vimos que a descrição é parte importante do teste, e que precisamos essencialmente de três informações nessa descrição:
 Local;
@@ -510,7 +508,6 @@ Testando o BankModel
 
 @@06
 Função expect()
-PRÓXIMA ATIVIDADE
 
 Aprendemos a produzir um teste e vimos que ele precisa de uma descrição e de um corpo, no qual temos os métodos que desejamos testar, porém precisamos usar uma função chamada expect() que espera por um resultado.
 A função expect() precisa de um actual e de um matcher. Qual a responsabilidade de cada um respectivamente?
@@ -529,7 +526,6 @@ O actual é o valor da variável no passado, enquanto o matcher é o novo valor 
 
 @@07
 Faça como eu fiz: testando 1, 2, 3
-PRÓXIMA ATIVIDADE
 
 Chegou a hora de testar seu conhecimento!
 Vamos criar um novo teste para seu aplicativo, para isso siga nosso passo a passo:
@@ -554,7 +550,6 @@ Caso tenha alguma dúvida, chame a gente no fórum!
 
 @@08
 O que aprendemos?
-PRÓXIMA ATIVIDADE
 
 E aí? Pronta(o) para revisar?! Acabamos de ver alguns novos conceitos úteis para produzir aplicativos com qualidade no Flutter:
 Pasta Test:
@@ -574,3 +569,494 @@ Finalizamos a Aula 2!
 Estamos evoluindo bem no conteúdo de testes no Flutter! E aí, o que está achando? Conta pra gente lá no fórum ou no Discord da Alura!
 
 Te vejo logo, logo!
+
+#### 04/01/2024
+
+@03-Realizando testes de Widget
+
+@@01
+Projeto da aula anterior
+
+Caso queira, você pode baixar o projeto do curso no ponto em que paramos na aula anterior.
+
+@@02
+Diferenciando teste manual e automatizado
+
+[00:00] Agora já sabemos fazer os nossos testes de unidade. Lembrando que o nome correto é teste de unidade e não testes unitários. Só para desencargo de consciência.
+[00:14] Já sabemos fazer teste de unidade, tanto que testamos uma classe que é o nosso bank model. Mas agora precisamos adentrar um pouco mais em testes mais difíceis. Vamos começar a explorar um pouco os testes de widget.
+
+[00:29] Porém, antes de já chegar de cara nos testes de widget, eu quero conversar um pouco com vocês sobre a grande diferença entre testes automatizados e testes manuais. Qual que é a grande diferença?
+
+[00:42] Vamos criar uma história, vamos criar um momento nosso. Vamos supor que eu quero mudar a cor lilás do nosso aplicativo, a cor lilás que é um degradê que está em cima do nosso aplicativo, de um azul mais escuro e vai ficando mais roxo.
+
+[01:01] Eu quero mudar essas cor. Então, eu vou no header, na parte esquerda, onde está esse código, header está dentro do components, dentro da seção sections e na linha 27, dentro desse header, temos as nossas três cores que compõem esse degradê.
+
+[01:14] Eu não quero mais esse degradê. Vamos mudar a cor, eu não quero mais que seja azul, eu quero seja completamente vermelho. Vamos ver aqui, zero no azul, zero no verde e agora um vermelho. Vou colocar 255 para ficar super vermelho.
+
+[01:34] Eu quero seja essa cor e mudei o nosso código. O que é natural fazer? O natural de nós, desenvolvedores, fazermos é apertar o botão Hot Reload e visualizarmos se o nosso código corresponde ao que nós queremos visualmente. Então, vamos ver.
+
+[01:50] Apertando o botão Hot Reload e ficou bem chocante. Mudou e nós visualizamos que mudou. Então, acabamos de fazer um teste manual para verificar se a cor que nós colocamos no código está aparecendo, de fato, no nosso projeto.
+
+[02:09] Agora imagina o seguinte, imagina que temos várias páginas, dez páginas para verificar. Teríamos que verificar todas as páginas uma a uma para ter certeza de que todas pegaram essa nova cor vermelha e demoraria um pouco mais de empo.
+
+[02:27] Assim os testes manuais começam a ser um pouco mais custosos porque demoramos um tempo para fazer, mas e se automatizássemos? E se tivéssemos um robô que fizesse isso por nós? Que verificasse se essa cor está correta em todas as outras páginas?
+
+[02:43] É isso que compõe o teste automatizado. Nós criamos um código, um robô, que testa todos os locais em que programamos esse robô. Então, ele vai testar todas as supostas dez páginas para verificar se as cores estão corretas.
+
+[03:02] Demoraríamos alguns segundos para fazer, enquanto o robô, que é bem rápido, faria isso em menos de um segundo. Então dá para perceber que testes automatizados são muito mais velozes do que testes manuais nesse nosso contexto que acabamos de criar.
+
+[03:18] Só para não ficar muito confuso, eu vou voltar as nossas cores para não termos problemas, eu vou apertar o botão Hot Reload para verificar. Voltou. Mas lembrem-se, se nós, humanos, fossemos testar, visualizar e observar pessoalmente cada um dos detalhes que mudamos no nosso código.
+
+[03:38] Sempre que mudássemos alguma coisa, iriamos demorar muito tempo, enquanto, se deixarmos esse trabalho para um robô, ele faz isso em segundo, às vezes, menos e essa é a ideia do teste automatizado.
+
+[03:51] Então, agora nós vamos começar a criar o nosso teste de widget automatizado que vai testar cada um desses nosso componentes que nós criamos individualmente de uma forma muito mais veloz do que nós poderíamos fazer fisicamente. Vejo você daqui a pouco.
+
+@@03
+Utilizando pump()
+
+[00:00] Agora vamos começar a produzir um teste de widget. Por onde nós começamos?
+[00:12] Nós temos que criar o nosso documento em dart. Então, vamos na nossa pasta test, criar um Novo Dart File, como nós já sabemos e o nome desse dart file vai ser home_test. Sabe por quê?
+
+[00:24] Porque nós vamos testar o widget home. "Mas, Kako, que widget é esse?". Vamos conferir no nosso main.dart. Se nós olharmos o nosso main.dart que é o nosso principal documento inicial.
+
+[00:37] Ele tem o Home aqui dentro que é filho de nosso BankInherited que é filho de MaterialApp que, por fim, é o nosso MyApp que é o aplicativo inteiro.
+
+[00:49] Então, o Home ele é, na verdade, nada mais, nada menos, do que a nossa tela. Então, tudo o que está desenhado na nossa tela está dentro do Home.
+
+[00:59] Então, vamos verificar no lado esquerdo da tela, dentro de screens, a nossa pasta screens, nós temos apenas uma tela que é o Home. Se eu clicar aqui nós abrimos o Home e dentro nós temos vários outros componentes que compõem toda essa tela que nós estamos vendo no nosso projeto.
+
+[01:13] Nós vamos fazer um teste widget com widget mais completo do nosso projeto. Você poderia fazer, caso você quisesse, um teste com widget menor. No meu caso eu quero colocar teste no Home justamente, porque ele é um widget completo e ele vai conseguir entender melhor essas questões de testes widget usando um widget completo.
+
+[01:35] Estamos testando o Home, esse é o nosso teste e como é que nós fazemos para testar esse nosso widget? Primeiramente, como normalmente nós fazemos, precisamos criar um void main que é a nossa função principal, nós precisamos também importar o nosso Flutter teste que nós vamos utilizar.
+
+[02:00] E agora nós temos que começar os testes. Como é que nós começamos o teste da última vez? Nós começamos com uma função chamada test, mas aquilo lá era para o nosso teste de unidade, agora nós vamos testar um widget.
+
+[02:12] Para começar a testar um widget, nós vamos usar uma função levemente diferente que é o testWidgets, vou apertar o botão "Tab" e ele vai escrever para mim. O testeWidgets é levemente diferente, ele tem um description e ele tem, em vez de uma função, que ele espera uma função no teste de unidade.
+
+[02:33] Agora nós temos um call back e esse call back usa um widgetTester. Esse widgetTester é o nosso robô que eu falei lá atrás. Lembra que nós podemos fazer os nossos testes manualmente? Nós podemos criar um robô que testa por nós? Esse aqui é a personificação do nosso robô.
+
+[02:51] Inclusive vou até mudar o nome dele aqui para (tester), é o nome do nosso robô. Então, é o tester quem vai olhar e verificar cada um dos pontos que estamos buscando nos testes que vamos fazer.
+
+[03:02] Beleza, vamos mudar nossa descrição. O que eu quero testar especificamente nesse teste de widget inicial? Não vou testar tudo, não vou chegar aqui agora com vocês e testar tudo o que está nessa tela. Vou testar um elemento por vez.
+
+[03:19] Eu quero ver se esse spent, no projeto, que em português significa gasto. Eu quero verificar se esse spent está, de fato, aparecendo na dela.
+
+[03:30] Então, eu vou colocar uma descrição aqui escrito 'My widget has a text "Spent" ', vou até colocar entre parênteses esse "Spent" só para ficar mais claro. Temos a descrição, temos o nosso call back e agora eu vou colocar um ponto e vírgula, na linha 3, só para não ter esse problema e vou mudar de seta para chaves.
+
+[04:03] Para nós podermos entender o que está acontecendo. Agora nós temos os nossos testes de widgets e como é que nós construímos o nosso teste de widgets?
+
+[04:14] Inicialmente, primeira coisa que eu vou fazer é dizer que esse call back aqui tem que ser assíncrono. Logo explicarei para vocês por que ele tem que ser assíncrono, mas basicamente nós temos que esperar algumas coisas acontecerem.
+
+[04:27] Segunda coisa que nós temos que fazer é, nós temos que desenhar uma tela, nós temos que construir uma tela, temos que buildar uma tela, porque é um widget e um widget é um componente visual.
+
+[04:40] Então, nosso robô, o nosso tester, ele tem que criar essa tela e verificar se os objetos estão, de fato, dentro dessa tela.
+
+[04:49] Então, como é que nós construímos essa tela? Primeiramente nós vamos ter que chamar um await, porque essa função demora para acontecer. E eu vou falar que o nosso tester, ou seja, o nosso robô, ele tem que fazer uma nova funcionalidade, ele tem que fazer uma nova coisa.
+
+[05:03] O que ele tem que fazer? Ele tem que pumpWidget. O que significa pumpWidget? Ele tem que criar, ou seja, buildar, como você desejar. Ele tem que criar, desenhar esse widget na tela para ele verificar. Primeira coisa que ele tem que fazer é desenhar o widget na tela.
+
+[05:22] Que widget é esse que nós queremos desenhar? É o nosso Home. Eu posso vir aqui e apertar os botões "Alt + Enter" para ele achar para nós o Home, deixar eu colocar um ponto e vírgula aqui para não ter problema e ele vai pedir para importar o nosso Home.
+
+[05:42] Mas se eu apenas pedir para ele importar o nosso Home para ele desenhar apenas o Home, vamos ter um problema. Sabe por quê? Vamos voltar lá no nosso main.dart, só para vocês entenderem um detalhe, e aqui que começa a brincadeira.
+
+[05:59] O Home é filho de um BankInherited que é filho de um MaterialApp. Então, a partir do momento que o Home é dependente de outros widgets, nós temos que saber isso na hora do teste.
+
+[06:14] Porque se eu tentar testar apenas um Home vai dar problema, porque o Home precisa de informações que estão dentro do nosso BankInherited, assim como ele também precisa de informações que estão dentro do nosso MaterialApp.
+
+[06:32] Então, lembra lá atrás quando nós falamos, na tabela, de que testes de unidade tem pouquíssimas dependências e testes de widget já tem um pouco mais de dependências. É aqui que começamos a ver esse detalhe, o Home depende de outros widgets para funcionar perfeitamente.
+
+[06:48] Então, nós não podemos chegar aqui e simplesmente chamar um Home para desenhar. Nós precisamos chamar a partir do MaterialApp, o BankInherited e o Home, para poder desenhar na nossa tela.
+
+[07:03] Então, vamos fazer isso? Sabendo tudo isso, vamos lá no nosso Home teste e vamos alterar para não ser apenas o Home. Vamos deletar Home() e eu vou criar o MaterialApp e esse MaterialApp tem um Home.
+
+[07:22] Esse nosso MaterialApp, um dos parâmetros dele é home: e o home desse MaterialApp vai o nosso BankInherited, vai ser um widget que precisa de um child e o child vai ser o nosso Home.
+
+[07:37] Vou apertar os botões "Ctrl + Alt + L" só para ficar bonito aqui e colocar uma virgula ficar tudo certo. Agora sim nós estamos criando, desenhando a nossa tela inteira para o tester poder procurar o nosso texto Spent.
+
+[07:55] Mas, opa, espera aí, nós acabamos de desenhar na tela com o função pumpWidget. Como é que nós procuramos widget que está aqui dentro? A informação que está aqui dentro?
+
+[08:08] Para isso nós precisamos de uma função que procura, que encontra e é isso que nós vamos ver daqui a pouco.
+
+@@04
+Utilizando Finders
+
+[00:00] Nesse instante nós acabamos de construir a nossa tela para o tester poder testar as coisas. Ele está desenhado na tela do nosso teste. Só que nós precisamos procurar algum objeto dentro dessa nossa tela. No caso, o objeto que nós estamos procurando é o texto Spent, ou seja, gasto, em português.
+[00:23] Como que nós fazemos para procurar alguma coisa no nosso teste? Para isso nós precisamos do finder. Para isso eu vou criar aqui um final e eu vou chamar esse final de spentFinder é um finder é alguém que procura, está procurando alguma coisa
+
+[00:40] E esse finder vai ser um find, é um comando de procurar e ele vai procurar um texto dentro desse nosso teste, dentro dessa tela que foi desenhada.
+
+[00:55] Que texto é esse? O texto é 'Spent'. Lembrando que tem que ser exatamente igual ao que nós estamos procurando, se for com um espaço ou com um S minúsculo, ele não vai achar da forma como nós estamos procurando.
+
+[01:10] Então, certifique-se de que o texto está certo. Nós estamos procurando um texto e usamos uma função find para procurar o texto no nosso home.
+
+[01:23] Legal, ele procurou o find e agora? Agora ele tem que comparar para ver se realmente esse find está lá dentro. Como é que nós fizemos isso das últimas vezes? Nós usamos a função expect, exato, então, nós pegamos uma informação que estamos buscando e compara para ver se a informação é a que nós queremos mesmo.
+
+[01:44] Então, eu vou pegar e dizer que o actual é spentFinder que essa informação é que está sendo buscado e o matcher que é aquilo que nós estamos querendo comparar vai ser findsOneWidget. "Como assim findsOneWidget, Kako? Não era para ser spent? Não era para ser só um texto?"
+
+[02:09] Não, porque agora nós estamos testando widgets e ele vai apenas procurar se esse widget existe ou não, se existem vários widgets, quantas vezes esse widget existe.
+
+[02:19] Calma, daqui a pouco nós vamos ver outros tipos de matchers, mas por enquanto nós vamos ter que procurar, vai ter que comparar isso com findsOneWidget.
+
+[02:28] Até porque só existe um widget que tem o texto chamado Spent na nossa tela, no nosso home. Então só recapitulando. Nós acabamos de desenhar a tela, criamos um procurador, um finder que procura o nosso texto e nós comparamos com o nosso expect, se esse texto que foi procurado existe apenas um widget nessa construção inteira, nesse teste todo.
+
+[02:57] Tudo isso para ver se o nosso teste, se a nossa tela tem Spent dentro. Então, eu vou clicar no Run, vamos ver se o teste passa. Passou.
+
+[03:10] Legal, aqui eu nem vou ficar brincando de ficar mudando o nome de *Spent. Vocês podem testar à vontade se quiserem, porque eu quero falar de outros tipos de finders antes de terminar essa aula.
+
+[03:20] Existem vários tipos de procurados, nós não precisamos procurar apenas textos, nós podemos procurar widgets específicos.
+
+[03:28] Então, é isso que eu quero fazer agora. Para facilitar a nossa vida, já vou criar aqui mais um teste widget, depois de outro teste de widget, linha 16, testWidgets e eu vou procurar um outro widget. O widget que eu quero procurar dessa vez é essa barra de progresso linear bem no centro do nosso aplicativo, que ela vai crescendo de acordo com o quanto que gastamos, só para vocês lembrarem.
+
+[03:52] Vou colocar vários depósitos e alguns transfers, vou atualizar, está vendo? Ele vai subindo e vai descendo. Então, vou colocar aqui na nossa descrição que é 'find a LinearProgressIndicator', que é o nome desse widget e podemos fazer da mesma forma como nós fizemos lá atrás.
+
+[04:16] Nós desenhamos o nosso home baseado no bank inherited e no MaterialApp, tem que ser assíncrono. Vamos deixar tudo bonito, bem alinhado.
+
+[04:34] Então, aqui dentro, primeira coisa que nós temos que fazer é desenhar a tela. Então, vou copiar da linha 8 até a linha 12 o nosso pumpWidget que vai desenhar na tela para a nós. pumpWidget, o nosso home, eu não quero ficar repetindo.
+
+[04:47] Mas lembrando que só porque foi feito aqui no nosso teste de spent, não quer dizer que não tem que ser feito aqui embaixo em outro teste. São testes diferentes. Então, nós temos que inicializar de novo, mesmo esquema que vimos nos testes de unidade quando nós precisávamos instanciar um objeto.
+
+[05:06] Então, agora nós queremos procurar outra coisa, não estamos procurando o finder, estamos procurando o LinearProgressIndicator, especificamente ele.
+
+[05:15] Então, como é que nós procuramos um widget que nem tem texto? Eu nem preciso criar um final, se eu quiser. No caso eu vou até alterar aqui para não ficar igual, já vou direto no expect.
+
+[05:33] E aqui no actual aqui eu posso criar um finder diretamente. Então, eu posso escrever find, só que existem vários tipos de find, existe find.byText, byElement, byWidget. No caso, nesse instante eu vou usar o find.byType e eu vou procurar qual é tipo de widget que eu estou procurando.
+
+[05:52] No caso é o nosso LinearProgressIndicator, não é o widget, é o tipo de widget. Isso aqui é a classe do widget, não o widget, em si.
+
+[06:02] Então, o LinearProgressIndicator e o matcher que eu estou procurando. Quantos LinearProgressIndicators existem? No caso existe só um. Então, findsOneWidget. Vamos verificar se isso está dando certo? Vamos lá, vou rodar e o ideal é que ele passe.
+
+[06:23] Teste passou, ele encontrou o nosso LinearProgressIndicator e antes de terminar, eu quero passar mais um tipo de finder. Lembrando que existem vários tipos de finders. Vocês podem clicar aqui no find. , ponto e procurar vários tipos de finders
+
+[06:37] O último tipo de finder é o finder bykey. Então, nós vamos procurar um widget baseado na key daquele widget, a chave especifica daquele widget.
+
+[06:46] Primeiro nós temos que verificar qual é a key, onde que tem uma key e nós não temos nenhuma key. Vamos criar uma key agora em um widget específico.
+
+[06:56] Então, primeiro ponto. Vamos colocar uma key em algum widget dentro do nosso home. Todos esses componentes, essas seções estão dentro do nosso home.
+
+[07:04] Então, eu vou no nosso recent_activities.dart, lado esquerdo da tela, e vou entrar nele. Todos esses componentes aqui estão dentro do home e eu posso colocar uma chave em qualquer um deles, porque eles vão estar dentro da tela que vamos desenhar no nosso teste.
+
+[07:19] Então, dentro do recent_activities, eu vou abri-lo aqui, que é um dos widgets que eu escolhi e eu vou procurar um widget específico dentro para colocar uma chave nele.
+
+[07:28] Por exemplo, nós temos na linha 13 um Box Card e esse Box Card recebe um Account Status. Esse Account Status eu quero colocar uma chave nele, eu quero nomear uma chave para que esse widget seja único por chave.
+
+[07:42] Então, eu vou no nosso Account Status já vou falar key e ele pede uma key que é um objeto, um widget key e esse widget key, deixa eu botá-lo como widget. Ele precisa de um texto dentro que vai ser especificamente essa chave de acesso única apenas para o Account Status.
+
+[08:06] Qual vai ser o nome dessa chave? Eu vou escrever uma chave bem simples que é 'testKey', deixa eu apertar os botões "Ctrl + Alt + L" para visualizar com facilidade.
+
+[08:13] Então, acabamos de adicionar uma chave no nosso Account Status. Você pode fazer isso com qualquer widget. O ideal é que a sua chave seja única mesmo, não uma palavra específica. Assim você consegue procurar vários widgets em projetos gigantescos.
+
+[08:27] Acabamos de adicionar uma key no Account Status e temos que verificar se esse widget, por chave, pode ser encontrado no nosso teste. Vamos testar?
+
+[08:39] Vamos lá no home_test.dart, vamos criar mais um teste widget, de fato, eu vou até copiar da linha 16 até a linha 23, porque é quase igual, quase a mesma coisa. Vou apertar os botões "Ctrl + C" em tudo, apertar o botão Enter e apertar os botões "Ctrl + V" e temos um outro teste.
+
+[08:54] Só que agora nós não estamos procurando um LinearProgressIndicator, estamos procurando o nosso Account Status, especificamente.
+
+[09:01] Então, eu vou escrever 'finds a LinearProgressIndicator' na linha 4. Vou deletar e escrever no lugar 'finds a AccountStatus' e nós temos que mudar apenas uma coisa que é o nosso expect.
+
+[09:23] Então, em vez de ser find.byType, eu vou deletar o find.byType, e escrever find., ponto. Lembrando que nós temos todos esse tipo de forma de procurar widgets, fiquem à vontade, mas eu vou o key só para mostrar para vocês que essa é uma das formas mais legais de procurar um widget específico.
+
+[09:42] E agora ele vai, simplesmente, perguntar para nós qual vai ser a chave que ele está procurando. Então, tem que ser um widget key como valor que é a nossa string 'testkey' e mais uma vez isso tem que estar escrito exatamente igual a nossa chave lá no nosso Account Status.
+
+[10:00] Se tiver um pouco diferente ele não vai encontrar. Então, agora é só testar o nosso teste widgets. Gente, às vezes essa seta, do lado direto, na linha 24, ela some, normal, as vezes dá uma bugada. É só você refazer o teste que ele volta, você pode testar com facilidade.
+
+[10:18] Caso você não consiga achar, você pode vir aqui em cima, parte superior esquerda, onde, normalmente, temos o nosso main.dart. Tem todos os testes aqui embaixo com o nome bonito e você pode procurar o teste que você quer e fazer rodar normalmente como se fosse um aplicativo.
+
+[10:32] Mas eu vou clicar na linha 24. O jeito padrão que nós temos, clicando na esquerda, e verificar se nosso teste vai passar. Ele vai procurar o widget que tenha a chave e passou, olha que legal.
+
+[10:42] Agora acabamos de ver várias formas de procurar widgets, foi um vídeo um pouquinho maior, mas foi bom que deu para passar tudo o que eu queria passar para vocês e caso vocês tenham vontade de experimentar outros tipos de find fiquem à vontade. Qualquer coisa só usar o fórum que nós ajudamos.
+
+@@05
+Para saber mais: documentação CommonFinders
+
+Existem diversos tipos de Finders disponíveis para facilitar sua busca por um Widget específico.
+Para quem tem mais curiosidade, separei uma pagina da documentação oficial do Flutter que fala sobre todos os métodos do tipo find:
+
+CommonFinders
+Aproveite para conferir e incrementar seus estudos!
+
+https://api.flutter.dev/flutter/flutter_test/CommonFinders-class.html
+
+@@06
+Entendendo os Matchers
+
+[00:00] Agora nós já começamos a entender a questão de testar um widget. Nós primeiro temos que criar a tela e dentro dessa tela simulada nós procuramos por um widget específico, pode ser com chave, pode ser tipo, pode ser por texto, pode ser por várias coisas e depois nós comparamos com o valor de retorno que, no caso, é o findsOneWidget.
+[00:25] "Espera, valor de retorno? Calma lá, Kako, você não falou nada disso". Está bom, vamos falar um pouco mais sobre o matcher. Aqui no nosso expect, nós temos o actual que é onde tem o find.byKey e nós temos o matcher que, nesse caso, nós temos o findsOneWidget.
+
+[00:43] Se você colocar o mouse em cima do findsOneWidget, ele vai te falar que existem outros tipos de matchers que pode ser o findsNothing que não encontra nada, o findsWidgets que descobre se existem widgets, um ou mais, mas não define o valor. Existe também o findsNWidgets que procura o número específico de widgets.
+
+[01:05] Então, esse que é o matcher, ele é aquele com o qual vai ser comparado o valor do que estamos buscando.
+
+[01:12] Então, para nós podermos ter uma visão um pouco melhor de como esse matcher funciona, eu quero usar o findsNWidgets, e para isso nós precisamos procurar um widget que aparece várias vezes no nosso projeto.
+
+[01:25] Que widget que está aparecendo? O que está aparecendo aqui várias vezes no nosso projeto? Vamos dar uma olhada?
+
+[01:31] Então, no nosso projeto inteiro, emulador, nós temos os headers, nós temos esse bloco que é o nosso status, nós temos esses três botões, esses três blocos que são as nossa ações, aqui embaixo nós temos esse grande bloco que são os nosso pontos.
+
+[01:49] Então, fica um pouco difícil de visualizar o que está sendo repetido aqui, mas eu falei uma palavra várias vezes e exatamente essa palavra que está sendo repetida várias vezes no nosso projeto.
+
+[02:01] Bloco, nós temos um bloco no status, é uma margem, é como se tivesse uma cor diferente, cinza claro. Nós temos esse mesmo formato no botão deposit, o mesmo formato no botão transfer, no scan também e assim como aqui embaixo em Account Points. Isso é um widget.
+
+[02:18] Vamos verificar no nosso código? Vamos dar uma olhada aqui nos nossos diretórios. Opa, eu não quero que fique aparecendo isso aqui, então, eu vou clicar.
+
+[02:30] Aqui nos nossos componentes, lado esquerdo da tela, nós temos vários de tipos de componentes e em vez de section, só dentro de componentes mesmo, nós temos um widget chamado box_card.dart, vamos neles.
+
+[02:41] O Box Card é um widget específico, vou até deixar aqui o home teste para a esquerda para ficar organizado. O Box Card é um widget que forma essa decoração inteira, essa decoração específica em quesito de formato, de cores, de temas.
+
+[02:59] Então, o Box Card está aparecendo várias vezes no nosso projeto. Vamos dar uma olhada em quantas vezes ele aparece no nosso projeto?
+
+[03:05] O primeiro lugar que ele está aparecendo é nosso recent_activities.dart, na linha 13, quando nós estamos criando o nosso AccountStatus. Lembra do AccountStatus? Acabamos de criar uma chave para ele. Agora pouco criamos uma chave para ele.
+
+[03:21] O AccountStatus nada mais é do que o status dessa informação dentro nosso projeto onde possui o spent, onde possui o earned, possui o nosso LinearProgressIndicator. Isso aqui tudo está dentro de um Box Card.
+
+[03:38] Beleza, já achamos um Box Card faltam mais, já dei spoiler aqui, mas faltam mais.
+
+[03:45] Então, qual é o próximo que nós temos que olhar? Aqui nós temos os points_exchange.dart e o points_exchange.dart tem aqui o nosso Account Points e o Account Points está dentro do Box Card, linha 20. Opa, tem mais um Box Card que denomina todo esse espaço em volta do nosso Account Points.
+
+[04:04] Beleza, já achamos os dois. O que mais nós precisamos procurar? O nosso actions.dart, na linha 51, também possui Box Cards, um deles para cada botão.
+
+[04:21] Então, vamos verificar, eu vou voltar aqui em cima, na linha 29, nós temos o Box Card do deposit. Então, nós temos toda uma atividade que compõem o deposit está dentro de um Box Card.
+
+[04:33] A mesma coisa aqui embaixo, na linha 40, para o transfer também é um Box Card e a mesma coisa aqui no scan, linha 51, que é outro Box Card. Caramba, achamos cinco Box Cards dentro do nosso projeto.
+
+[04:45] Então, quando nós formos fazer um teste que procurar um Box Card, nós estamos procurando por cinco widgets especificamente dentro desse nosso teste específico, dentro do home_test.dart.
+
+[04:56] Então, vamos criar isso. Como que nós fazemos isso? Para isso vamos criar um novo teste e nós vamos até aprender a usar um novo finder, mas vamos uma coisa de cada vez.
+
+[05:07] Novo teste, testWidgets, mesma coisa que nós fizemos, a descrição vai ser 'finds a BoxCard'. No caso, não vai ser a Box Card, vai ser find 5 BoxCards para nós já termos certeza, quando o teste passar, se está dando certo na descrição.
+
+[05:27] O nosso tester, vou mudar WidgetTester só para tester para ficar padronizado. Vou trocar de seta para chave, linha 32, pôr um ponto e vírgula. Lembrando que isso aqui tem que ser assíncrono, porque nós estamos desenhando a tela. Então, eu vou no nosso async.
+
+[05:46] E vamos lá, agora nós temos que colocar o nosso dentro do nosso teste. Nós temos que mandar um await, porque temos que esperar, espera o quê? Esperar para a nossa tela ser construída.
+
+[06:01] Nossa tela vai ser construída pelo tester o nosso robô e o nosso tester precisa usar o pumpWidget para construir os widgets que estão aqui dentro com calma.
+
+[06:13] Então, quais vão ser os widgets? Mais uma vez nós já fizemos isso antes, vou, inclusive, para facilitar a nossa vida, copiar o MaterialApp, BankInherited e o Home(), vou apertar os botões "Ctrl + C" da linha 25 até a linha 29. Acho que eu copiei do jeito errado.
+
+[06:32] Então, eu tenho que vir da linha 29 a 25, mas eu não preciso copiar o ultimo parentes e o último ponto e vírgula, porque já está aqui.
+
+[06:43] Era exatamente isso, vou apertar os botões "Ctrl + Alt + L" para ficar indentado. Já desenhamos a nossa tela, agora o que nós precisamos? Precisamos do finder, precisa do expect, precisa do matcher.
+
+[06:55] Eu já vou colocar isso tudo junto. Vou criar, na linha 38, um expect e precisa de um actual e precisa de um matcher. Poxa e esse actual? Como é que vai ser?
+
+[07:05] O nosso actual nós vamos usar o find. só que dessa vez não vai ser byKey, não vai ser byType, vai ser finds.byWidgetPredicate. O que isso aqui significa? Significa que nós vamos verificar um widget e nós vamos procurar se esse widget bate com o nosso Box Card.
+
+[07:31] Nós vamos comparar vários tipos de widget, predicado dos widgets, se ele tem uma estrutura igual, na verdade. Ele vai comparar as classes que criamos do Box Card.
+
+[07:44] Como é que nós fazemos isso aqui? Nós vamos ter que fazer uma nova comparação. Eu vou vir aqui, ele pede o widget, ele está pedindo um widget e uma função call back
+
+[07:54] Aqui dentro do nosso widget, eu vou com uma condição if que vai perguntar se o widget que nós estamos comparando, ou seja, ele vai olhar cada um dos widgets dentro da nossa tela, ele vai olhar cada um deles e vai perguntar se esse widget.
+
+[08:10] Vou aqui, linha 39, se o widget é um Box Card. Se for um Box Card, eu vou codar um if é uma condição, se for um Box Card, retorne true. Caso não seja um Box Card, então, else para ficar bonito, caso não seja retorne false.
+
+[08:37] Então, o que ele está fazendo aqui? Esse nosso find.byWidgetPredicate está olhando cada um dos widgets e está comparando se esse widget é um Box Card, se for, verdadeiro, se não for, falso.
+
+[08:49] E agora só falta o nosso matcher. Deixa eu dar um ponto e vírgula na linha 46 só para ele não dar erro. Agora falta o nosso matcher que é comparando quantos widgets foram encontrados.
+
+[08:58] Então, findsNWidgets, eu vou descer aqui para codar findNWidgets, linha 46, e esse findNWidgets é um método, uma função que pede uma quantidade.
+
+[09:11] Então, primeira coisa, respira fundo, eu sei que é muita coisa. Toma uma água, se hidrata. No meu caso estou tomando um chá para dar uma acalmada. Pode ser café, pode ser água, mas o importante é você se hidratar.
+
+[09:25] Vamos lá, o nosso findsNWidgets é uma função que requer uma quantidade de widgets que estamos procurando. Então, no caso, eu vou colocar o valor de '5'. Pronto, acabamos o nosso teste um pouco mais complexo, porque o nosso finder agora está procurando por predicado em cada um dos nossos Box Cards.
+
+[09:47] Vamos ver se nosso teste está passando? Esperando e passou, quer dizer que ele encontrou todos os cinco Box Cards dentro da nossa tela.
+
+[10:01] Lembrando que você pode testar, se você colocar 4, vê se passa, você mudar o tipo de widget e ver se ele encontra. Fica à vontade para testar e brinca um pouco.
+
+[10:12] Até daqui a pouco.
+
+@@07
+Para saber mais: documentação Additional Matchers
+
+Existem diversos tipos de Matchers disponíveis para relacionar a quantidade de Widgets encontrados.
+Para você aprofundar os estudos, separei uma página da documentação oficial do Flutter que mostra os diferentes Matchers disponíveis.
+
+Matchers Adicionais
+Recomendo dar uma olhadinha!
+
+https://docs.flutter.dev/cookbook/testing/widget/introduction#additional-matchers
+
+@@08
+Procurando Widget
+
+Vimos diversas formas de procurar um Widget nessa última aula, chegamos a utilizar algumas delas
+Quais são, na ordem correta, os finders para: encontrar por chave, por predicado, por tipo e por texto?
+
+byWidgetKey ; byWidgetPredicate ; byWidgetType ; byWidgetText
+ 
+Alternativa correta
+Key ; WidgetPredicate ; Type ; text
+ 
+Alternativa correta
+byKey ; byPredicate ; byType ; byText
+ 
+Não, o by não é obrigatório como nome dos métodos Find.
+Alternativa correta
+byKey ; byWidgetPredicate ; byType ; text
+ 
+Isso ai! Nem todos eles tem o mesmo formato/padrão de nomenclatura.
+
+@@09
+Faça como eu fiz: cadê o Widget?
+
+Testou? Vamos aplicar o que foi visto durante as videoaulas, então!
+Vamos criar um novo teste de Widget para seu aplicativo, e lembre-se de:
+
+Verificar as dependências necessárias para dar pump no Widget;
+Produzir um teste com uma boa descrição;
+Procurar vários Widgets com diferentes Finders;
+Utilize diferentes Matchers para quantidades distintas de Widgets.
+Também testamos a ação do nosso botão de depósito (deposit), agora é a sua vez de testar as seguintes ações que ocorrem no projeto Alurabank:
+
+Botão transfer:
+Seção Available balance;
+Seção Spent.
+Vamos lá?
+
+O objetivo desta atividade é estimular você a produzir vários testes no seu aplicativo.
+Um exemplo de código que poderia ser testado é o caso do “Deposit”:
+
+testWidgets('My widget has a text "Deposit" ', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: BankInherited(
+        child: Home(),
+      ),
+    ));
+    final spentFinder = find.text('Deposit');
+    expect(spentFinder, findsOneWidget);
+  });COPIAR CÓDIGO
+Existem diferentes tipos de Finder e diferentes Matchers, e existem tantos justamente para facilitar sua vida ao procurar Widgets diferenciados!
+Caso tenha alguma dúvida, chame a gente no fórum!
+
+@@10
+Testando ações
+
+[00:00] Nós acabamos de aprender a fazer os nossos testes de widget que são um pouco mais dependentes.
+[00:09] O nosso tester, nosso robô automatizado, ele está apenas olhando para a tela e verificando se os elementos estão lá.
+
+[00:16] Só que o nosso projeto não é uma tela estática que não se move, não muda, ela é uma tela de dinâmica, é um aplicativo, nós mudamos, nós temos ações para fazer nesse aplicativo.
+
+[00:26] O ideal é que nós possamos testar ações no nosso aplicativo. "Como assim ações, Kako?" Quais são as ações do nosso projeto?". Vamos dar uma olhada?
+
+[00:36] Nós temos botões funcionais, que é o deposit e o transfer. Se nós clicarmos em deposit, ele vai mudar o valor de algumas variáveis como o earned, o available balance ou o points.
+
+[00:48] Só que para podermos visualizar essas alterações, nós temos que clicar no elemento que é o nosso status, por exemplo, e ele atualiza o valor de earned.
+
+[00:59] Se nós clicarmos no elemento que é o header aqui em cima ele atualiza o valor, se nós clicarmos lá embaixo no elemento que corresponde aos pontos, ele atualiza esse valor e a tela muda.
+
+[01:10] Então, isso são ações que nós temos que fazer. Nesse instante, nós estamos testando manualmente se essa ação é funcional, mas nós queremos programar o nosso robô, o nosso tester, para testar isso automaticamente sozinho, para ter certeza de que nada vai parar de funcionar.
+
+[01:27] Então, vamos começar a fazer esses testes que envolvem ações do nosso tester? Vamos lá. Primeira coisa que temos que fazer, vamos voltar aqui para o nosso home_test.dart, embaixo do nosso teste widgets, no caso, está na linha 47 e eu vou começar um novo teste de widget.
+
+[01:44] testWidgets, como nós já sabemos, precisamos de uma descrição, de um call back, o call back eu vou mudar o nome para tester e vou deixar o nosso call back na forma de chaves em vez de seta, ponto e vírgula para deixar tudo certo, apertei os botões "Ctrl + Alt + L" para deixar indentado.
+
+[02:02] E a descrição nós precisamos descrever o que esse teste vai fazer. No caso desse instante, eu quero testar o botão deposit para verificar se quando eu aperto em deposit, o valor de earned sobe em 10 dinheiros, 10 pontos, 10 reais, 10 dólares, o que você quiser.
+
+[02:18] Então, vamos colocar uma descrição aqui, 'When tap Deposit should upload earned in 10 points', acho que points não combina tanto upload earned in 10. Fica mais fácil de entender que quando nós apertamos em deposit o valor que está em earned vai subir em 10.
+
+[02:52] Vamos lá, apertar os botões "Ctrl + Alt + L", para dar uma indentada e vamos começar o nosso teste. Assim como nós fizemos em todos os testes, ele tem que ser assíncrono, porque nós estamos colocando o nosso tester pump para desenhar na tela toda essa nossa screen home.
+
+[03:13] Então, para facilitar a nossa vida, isso aqui nós já vimos, mas se você tiver com alguma dúvida, pode me acionar no fórum.
+
+[03:20] Vou apertar os botões "Ctrl + C" no nosso tester.pumpWidget, da linha 34 a 38, para nós podermos printar a tela e vou colocar aqui o nosso novo teste de widgets, na linha 48.
+
+[03:30] Temos o nosso desenho de tela e agora nós precisamos fazer algumas ações e como nós fazemos ações?
+
+[03:40] Para fazer ações nós usamos uma nova função que também depende do tester, nós vamos pedir para o tester que é o nosso robô para ele fazer uma ação de tap.
+
+[03:50] Existem vários tipos de ação. Tem tap, tem drag que é arrastar, tem o scroll until que é um que você vai rolando a tela até encontrar. Existem vários tipos de ações, mas nessa aula nós vamos ver apenas o tap.
+
+[04:09] Então, inicialmente, eu vou falar "tester. eu quero que você dê um tap em alguma coisa". Que coisa? Bom, essa coisa nós precisamos encontrar, esse objeto, esse lugar onde tem uma ação.
+
+[04:24] Eu vou aqui e falar, "Eu quero que você procure um widget que tem o valor de deposit". Então, qual vai ser o finder que nós temos que colocar aqui? O que nós estamos procurando?
+
+[04:36] Nós estamos buscando o nosso botão de deposit e como é que nós podemos encontrá-lo? Tem várias formas, nós podemos usar o Box Card específico com uma key ou um tipo específico do widget que tenha esse ícone.
+
+[04:50] Ou de um jeito mais simples, vamos usar o jeito mais simples, por enquanto, que é o find.text e o text que nós queremos só tem em um lugar é o deposit. "Se tivesse dois lugares escrito deposit, Kako?" Quer dizer que ele ia clicar, procurar esses dois lugares e clicar nos dois.
+
+[05:10] Então, nós pedimos para o nosso tester clicar no nosso deposit. Vou adicionar aqui o await, para que nós possamos esperar o nosso robô, o nosso tester clicar em deposit antes de fazer a próxima ação.
+
+[05:25] Então nosso tester clicou em deposit o que ele precisa fazer depois? Bom, ele vai precisar clicar no local correspondente que tem o earned e o valor de 10 que é o nosso status. Como que nós podemos fazer isso?
+
+[05:41] Então, vamos fazer mais um tester await tester.tap para ele poder dar um tap, um clique e o mesmo tipo de find porque é mais fácil, no momento, para nós, find.text e vamos buscar em todo essa nossa tela, o nome earned, porque só existe no nosso widget clicado. Então, mais fácil de encontrar.
+
+[06:08] Então, 'Earned', ele vai procurar o texto earned e vai clicar nele. Depois que ele clicar nele, ele vai procurar para ver se existe o valor de 10 no nosso novo widget.
+
+[06:23] Não só 10, ele quer procurar, especificamente, aqui em cima. Para facilitar, eu vou até clicar no deposit e depois no status, que é onde tem o earned, por exemplo, e ele atualizou para cifrão 10, 10 dólares.
+
+[06:38] Então, nós vamos buscar por essa informação aqui, cifrão 10 dólares. Vamos lá, nesse caso nós estamos esperando. Então, nós estamos esperando expect o quê? Nós esperando um finder que é o find.text.
+
+[06:56] Qual que é esse text? É um text que vai ter barra para esquerda cifrão, que nós sabemos que é o cifrão mesmo '\$10.0'. É isso que ele está procurando e o matcher que nós vamos buscar é ter certeza de que só existe um widget.
+
+[07:14] Então, findOneWidget. Recapitulando, vamos verificar se está tudo certo. Nós estamos criando o nosso teste de widget, temos a descrição, ele desenhou toda a tela, ele vem aqui e clicou no nosso botão que tem escrito deposit.
+
+[07:32] Depois ele foi e clicou no lugar onde está escrito earned e depois ele esperou encontrar o texto $10.0 e encontrou apenas um widget. Vamos ver se esse teste funciona?
+
+[07:45] Vou clicar no botão Run. Será que funciona? Não funcionou. Por que não funcionou? Bom, eu deixei esse erro falhar de proposito, porque tem uma coisa importante que nós esquecemos.
+
+[08:02] Normalmente nós esquecemos quando não estamos muito atentos que é o seguinte. Quando nós estamos usando o pumpWidget, o que nós estamos fazendo? Nós estamos desenhando na tela.
+
+[08:15] Então, essa simulação de tela está sendo desenhada. Uma vez que nós apertamos um tap, ele está mudando os valores, porque estamos clicando no botão deposit. Depois que nós clicamos, usamos o tap no earned.
+
+[08:30] Nós estamos atualizando a nossa tela, emulador, porém nós precisamos avisar para o tester. Nós precisamos avisar para o teste que ele tem que reatualizar essa nossa tela, precisa recarregar essa tela.
+
+[08:42] Não é só porque a função que está dentro do nosso widget clicável, altera automaticamente o valor com Set State que o tester também vai mudar.
+
+[08:54] Toda vez que a sua tela mudar de forma, você precisa avisar para o tester que ele tem que dar um novo pump. O que é um pump, é como se ele estivesse fazendo os micro serviços, os pequenos serviços que fazem com que a tela mude.
+
+[09:11] E existem vários serviços. Então, nós vamos ter que vir aqui, logo depois do nosso tap, no earned e pedir para o nosso tester dar um novo pump na tela e esperar.
+
+[09:24] Então, nós podemos vir aqui e usar o await tester, existem vários tipos de pump, tem pump puro, tem o pumpWidget, tem o pumpAndSettle, o pumpBenchmark, o pumpFrames.
+
+[09:37] São vários tipos de pump que são como se fosse esperar micro serviços, micro atividades que o nosso projeto faz quando nós estamos atualizando a tela e ele espera esses serviços terminarem.
+
+[09:50] No caso nós vamos usar o pumpAndSettle, porque ele vai esperar todos os micro processos acabarem para depois continuar. Se nós usarmos só o pump, ele vai esperar um micro serviço terminar e continuar e assim vai.
+
+[10:05] Então, vamos usar um pumpAndSettle. Vou usar o pumpAndSettle e agora sim o nosso tester vai clicar em deposit, depois ele vai clicar em earned, depois ele vai esperar todos os micro processos que alteram a tela acabarem e ele vai procurar pelo valor de 10 dólares. Vamos ver?
+
+[10:26] Vou aqui e clicar para rodar o nosso teste. Agora ele deve passar. Passou. Olha que legal. Bacana.
+
+[10:36] Acabamos de criar uma ação no nosso tester, ensinar o nosso robô a fazer ações, esperar o resultado dessas ações.
+
+[10:45] Nós não precisamos testar só o deposit, dá para testar o transfer e vários outros botões. Nós não precisamos testar só o earned, podemos testar o que tem o spent, o available balance ou o points. Fica ao seu critério.
+
+[10:59] Mas a princípio aprendemos a fazer um novo teste. Eu te desafio a fazer o teste para todas as áreas de ações nesse nosso projeto aqui.
+
+[11:09] Vejo você daqui a pouco.
+
+@@11
+Para saber mais: outras ações
+
+Vimos que podemos simular ações no nosso teste, mas tap() não é a única ação disponível para o nosso tester. Para ajudar você a explorar novas ações, separei algumas outras ações que você pode simular, tais como arrastar, inserir texto ou até scrollar a tela.
+Bons estudos!
+
+https://docs.flutter.dev/cookbook/testing/widget/tap-drag
+
+https://docs.flutter.dev/cookbook/testing/widget/scrolling
+
+@@12
+O que aprendemos?
+
+Chegou a hora de sentar e revisar o que vimos! Nessa aula, metemos a mão no código e construímos testes de widgets, exploramos vários Finders, aprendemos criar um Matcher e ainda vimos a diferença entre teste automatizado e teste manual:
+Teste Automatizado Vs Teste Manual:
+Comparamos a eficiência de um teste Manual (que é feito pelo desenvolvedor, ao alterar o código e verificar se de fato o projeto seguiu o desejado ) e o teste automatizado (que é feito pelo framework e é extremamente veloz e eficiente).
+
+Testes de Widgets:
+Aprendemos que testes de Widgets requerem um pouco mais de cuidado, pois precisam ser renderizados em uma tela emulada para a verificação de elementos desenhados, além de possuir mais possibilidades de dependências entre outros widgets.
+
+pump():
+Método capaz de esperar pelos microprocessos necessários para buildar/renderizar/desenhar na tela os elementos dos Widgets. Lembre-se de que existem diversos tipos de pump() que podem se adaptar melhor a diversos testes e Widgets específicos.
+
+Finders:
+Nome dado aos métodos capazes de buscar, na tela renderizada, os Widgets desejados, utilizando diversas abordagens de procura, como tipo de Widget, qual sua chave, entre outros.
+
+Matcher:
+Compreendemos que, ao encontrar um Widget na tela, precisamos ter algum grau de controle quanto a ele. Assim, podemos verificar quantos Widgets existem na tela e quais os parâmetros que confirmam que de fato aquele Widget é o procurado. Os Matchers são responsáveis por essa comparação.
+
+Testar ações no código:
+Quando testamos nosso aplicativos, nos deparamos com ações de interação com botões, caixas de texto, scrollables entre outros. As ações são instruções que damos ao nosso tester para interagir com certos Widgets a fim de verificar sua usabilidade.
+
+Finalizamos a Aula 3!
+
+Já passamos da metade! E aí, o que está achando? Conta pra gente lá no fórum ou no Discord da Alura!
+
+Vejo você na próxima aula!
