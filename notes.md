@@ -1072,7 +1072,6 @@ Vejo você na próxima aula!
 
 @@01
 Projeto da aula anterior
-PRÓXIMA ATIVIDADE
 
 Caso queira, você pode baixar o projeto do curso no ponto em que paramos na aula anterior.
 
@@ -1376,7 +1375,6 @@ Criando Stubs
 
 @@06
 Faça como eu fiz: Mockito - eu escolho você!
-PRÓXIMA ATIVIDADE
 
 Tá na hora de você contratar seu Dublê! Brincadeiras à parte, é importante agora praticar as implementações que fizemos ao longo desta aula.
 Vamos aplicar o que aprendemos para produzir um Mock:
@@ -1436,7 +1434,6 @@ Finalizando os testes
 
 @@08
 Projeto final do curso
-PRÓXIMA ATIVIDADE
 
 Caso queira, você pode baixar aqui o projeto completo implementado neste curso.
 E se preferir, você também pode acessar o repositório completo no GitHub.
@@ -1447,7 +1444,6 @@ https://github.com/alura-cursos/alura_flutter_curso_7/tree/master
 
 @@09
 O que aprendemos?
-PRÓXIMA ATIVIDADE
 
 Vamos dar um replay no que aprendemos? Nessa aula, adicionamos ações no nosso teste e produzimos um Mock com Stub. Além disso, entendemos com mais clareza as relações de dependências nos testes:
 Ações:
