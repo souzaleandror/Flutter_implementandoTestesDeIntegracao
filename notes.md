@@ -2,6 +2,11 @@
 
 Curso de Flutter: aplicando testes de unidade, de Widget e Mocks
 
+```
+flutter pub run build_runner build
+dart run build_runner build
+```
+
 @01-Entendendo o projeto 
 
 @@01
@@ -1060,3 +1065,439 @@ Finalizamos a Aula 3!
 Já passamos da metade! E aí, o que está achando? Conta pra gente lá no fórum ou no Discord da Alura!
 
 Vejo você na próxima aula!
+
+#### 05/01/2024
+
+@04-Aplicando Dublês
+
+@@01
+Projeto da aula anterior
+PRÓXIMA ATIVIDADE
+
+Caso queira, você pode baixar o projeto do curso no ponto em que paramos na aula anterior.
+
+https://github.com/alura-cursos/alura_flutter_curso_7/archive/refs/heads/Aula_3.zip
+
+@@02
+Aplicando Dublês
+
+[00:00] Então, quer dizer agora que nós já sabemos fazer os nosso testes de widget e os nosso testes de unidade e está tudo dar certo, então, já estamos muito bem, não é?
+[00:15] Pois é, não estamos tão bem assim, porque nem tudo está dando certo. Inclusive, todos os testes que nós fizemos uma coisinha não estava muito certa.
+
+[00:25] Qualquer teste que nós formos olhar agora com calma, vocês vão ver a mesma mensagem. Vou mostrar para vocês qual é o problema que está dando e que eu não falei para vocês até agora.
+
+[00:35] Vou rodar o nosso último teste que foi o teste do deposit, para vocês terem certeza de que esse erro está em todos os lugares, mas vocês podem fazer com outros testes também.
+
+[00:46] Se eu rodar aqui, vocês vão ver que o teste passa, porém se nós dermos uma lida no teste, existe uma mensagem escrita, "Não foi possível se conectar com a API: 400".
+
+[00:58] O que é isso aqui? Opa, espera aí, como assim? Como não foi possível se conectar com a API: 400? O que está acontecendo?
+
+[01:05] Vamos dar uma olhada aqui no nosso HTTP, como nós fazemos essa implementação nesse projeto, para nós entendermos que mensagem é essa. Vamos aqui no nosso projeto, a esquerda, e vamos acessar data e vamos acessar o documento bank_http.dart.
+
+[01:22] Nesse nosso documento bank_http.dart, nós temos a conexão com o site economia.awesomeapi que nos diz qual é o valor em relação ao dólar e o real naquele instante.
+
+[01:36] Então, essa é a nossa API, nós estamos pegando informação em relação ao dólar e real, nós podemos ver essa informação no nosso aplicativo, à direita e em cima, e esse valor muda de acordo como valor do dólar e do real no momento.
+
+[01:50] Nós estamos pegando essa informação em tempo real. Então, se nós tivermos uma conectividade, uma conexão boa, nós vamos ter uma resposta de 200 e ele manda essa informação para nós.
+
+[02:03] Caso tenha algum problema, caso o statusCode, a conexão não seja 200, significa que não foi possível se conectar com a API, ele vai mandar essa informação para nós no nosso console e vai dizer qual é o statusCode, 400, no caso.
+
+[02:20] Então, isso está acontecendo em todos os nosso testes. Por que isso está acontecendo? Bom, isso está acontecendo, porque quando nós estamos testando alguma coisa, quando nós estamos fazendo testes no Flutter, ele não vai testar conexão de fora, conexões externas.
+
+[02:37] "Kako, por que não testa essas conexões externas?". Vamos supor o seguinte, vamos imaginar que o nosso teste testa, inclusive, as conexões com essa nossa API do dólar e por um instante de segundo, em um momento no dia, esse site ficar fora do ar, por um segundo, as vezes um pouco mais, mas esse site está fora do ar.
+
+[03:00] E nesse incrível momento que você está testando a sua aplicação e o site está fora do ar, o teste não passa e se o teste não passa, bom, você vai achar que tem algo errado. Só que não é culpa do seu projeto, não é culpa do Flutter, é só uma conexão com algo externo que está fora do ar, ou seja, nós criamos um teste não confiável quando nós adicionamos uma API a esse teste.
+
+[03:27] Nós chamamos, inclusive, de Fake test, um teste não-confiável. Ele pode estar passando agora e daqui a dois segundos não passar, porque o site sob o qual não temos controle nenhum, saiu do ar.
+
+[03:39] Então, não é legal nós termos um teste que testa toda a nossa aplicação e não depende só de nós, ou seja, nós temos um teste não muito confiável. Como é que nós podemos lidar com isso aqui?
+
+[03:51] Para entender como lidar com a conexão API, ou conexões de fora que não dependem só do nosso projeto, nós usamos um termo chamado de dublês. Existem vários tipos de dublê. Eu vou mostrar para vocês como eles funcionam, mais ou menos.
+
+[04:06] Vamos imaginar o seguinte, imagine que o nosso projeto é um quebra-cabeça. Existem vários pedaços do nosso quebra-cabeça. Como vocês podem ver agora, nós temos um quebra-cabeça com peças cinzas, uma peça verde e algumas peças amarelas.
+
+[04:21] As peças cinzas são peças que nós não temos muito interesse, a peça amarela é a peça, o objeto, o local onde nós estamos fazendo o nosso teste e as peças amarelas são as peças que se encaixam perfeitamente na nossa peça verde, ou seja, são as nossas dependências daquele objeto ou widget.
+
+[04:42] Ou seja, se eu quiser testar a peça verde, eu vou ter de levar em consideração as peças amarelas, só que olha só, as peças amarelas estão conectas em algumas peças cinzas e fica difícil de testar peça verde se nós não acabarmos testando tudo.
+
+[04:55] Então, como é que nós podemos resolver esse problema? Para resolver esse problema, nós usamos alguns dublês. Então, agora vocês devem estar vendo a imagem, no canto esquerdo, um pouco atualizada, onde nós temos a peça verde no centro e algumas peças amarelas que são apenas resquícios da antigas amarelas.
+
+[05:13] Elas são só encaixes para encaixar na nossa peça verde, são objetos que estão simulando ações ou algumas dependências apenas para a peça verde poder funcionar sem problemas.
+
+[05:25] Não são peças verdadeiras que funcionam no nosso projeto. São apenas peças de encaixes para nós podemos testar sem ter problemas.
+
+[05:32] Esses são os nosso dublês e nós precisamos de dublês de teste toda vez que tivermos algum teste com uma dependência que não depende muito da nós que é o caso da API.
+
+[05:42] Então, como é que nós fazemos para implementar isso no Flutter? Existem vários tipos de dublê. Existe mock, existe stub, existe spy, existe dummy, existe fake.
+
+[05:55] Nesse curso, especificamente, nós vamos ver o mock e os stubs, mas uma coisa de cada vez.
+
+[06:01] Para nós começarmos com pé direito nesses nossos dublês, já vou mostrar para vocês como é que nós implementamos um mock no nosso projeto. Vem comigo, vamos ali no nosso site do Flutter.
+
+[06:14] Estamos aqui no site do Flutter que vocês já conhecem bastante, flutter.dev. Aqui à direita em cima, eu vou clicar no nosso menu e vou clicar no get started e nós vamos para a nossa famosa documentação do Flutter.
+
+[06:29] Aqui à esquerda embaixo do nosso menu, eu vou procurar por texting. Então, vamos descer aqui e existe Texting & Debugging, vou abrir e eu vou buscar pelo tópico de texting.
+
+[06:42] Na página nós temos uma documentação extensa e muito bem-feita sobre testes. Vocês podem vir aqui e olhar bastante coisa sobre teste de unidade, teste de widget, mais especificamente nós estamos procurando mock, dependências com mock e aqui embaixo, descendo um pouco, no tópico de Recipes.
+
+[06:58] Vocês vão ver que tem um tópico escrito Mock dependencies using Mockito. Vamos clicar e agora nós estamos na nossa documentação. Se vocês quiserem parar um pouco, dar uma lida com calma para entender como é que isso tudo funciona, vocês podem, mas vocês também podem usar só essa aula para seguir no nosso curso.
+
+[07:15] Nós temos aqui várias coisas de como funciona para adicionar um mock no nosso Flutter. Eu estou aqui só para mostrar como é que a documentação funciona em relação ao Mockito.
+
+[07:27] Mockito é um pacote que nós podemos usar para adicionar a nossa funcionalidade no nosso projeto, eu vou clicar nesse link escrito Mockito package que vai nos levar para o Pubdev do Mockito que é o pacote que nos ajuda a adicionar um mock, um dublê no nosso projeto.
+
+[07:47] Existem muitas coisas para você ler aqui. Se você quiser ler com calma, mas agora eu vou só ensinar para vocês como nós criamos um mock, um dublê da nossa API que já está no nosso projeto, de um jeito bem mais simples, mas vocês podem vir aqui para entender tudo.
+
+[08:03] Ele está explicando para nós aqui que nós temos que colocar um generate mock no nosso arquivo que precisa ter um dublê. Então, qual é o nosso arquivo que precisa ter um dublê? Vamos voltar no nosso projeto. Aqui no nosso projeto, nós temos o BankHttp e ele precisa de um dublê, porque nós não queremos que o nosso teste fique dependendo dele toda hora.
+
+[08:23] Então, eu vou vir aqui e vou escrever @GenerateMocks e ele precisa da classe, a classe que nós estamos buscando é o BankHttp. Vou colocar na linha cinco BankHttp e agora nós já acionamos uma forma de criar um novo mock, mas não é só isso, nós temos que dizer para o Flutter, "cria um dublê dessa classe para mim, por favor", "Beleza, vamos criar sim, mas isso nós vamos ver daqui a pouco".
+
+@@03
+Gerando um Mock
+
+[00:00] Então, nós estamos criando, um mock, um dublê, e para isso nós usamos, escrevemos esse comando diferenciado @GenerateMocks. Mas isso aqui não é o suficiente para gerarmos o nosso dublê do BankHttp.
+[00:19] Para nós gerarmos o nosso dublê, vamos dar uma olhadinha na documentação, só para não nos perdermos. A documentação está no pub.dev/packages/mockito. Nós estamos usando o pacote do Mockito que é um pacote que facilita a criação de dublês, especificamente, mocks para o Flutter.
+
+[00:42] Escrevemos o @GenerateMocks e colocamos o nosso tipo de classe que queremos gerar no nosso mock, no caso, é o nosso BankHttp.
+
+[00:56] Nós precisamos fazer umas coisas, como colocar no nosso pubspec.yaml o pacote do Mockito e um outro pacote que a documentação está explicando para nós aqui que é o build_runner.
+
+[01:06] Eu não vou ler a documentação para vocês. Como eu já sei, exatamente, o que a temos que fazer, eu vou fazer passo-a-passo para nós. Caso vocês queiram, você pode parar o vídeo um pouco e dar uma lida em toda essa documentação aqui como já vimos lá atrás como nós lidamos com pacotes.
+
+[01:24] Então deixar a documentação para caso vocês queiram olhar e vou direto, agora, para o nosso projeto.
+
+[01:30] Então, voltando aqui para o nosso projeto, deixa eu abaixar a aba. Voltando aqui para o nosso projeto, o que vamos precisar fazer primeiramente? Vamos lá na aba pubspec.yaml e no pubspec.yaml nós vamos procurar o local onde podemos adicionar uma dependência.
+
+[01:46] Então, temos na linha 29 dependencies e embaixo do http, na linha 37, que é um pacote que já veio no nosso projeto. Eu vou colocar o pacote do mockito. O mockito que estamos usando nessa versão do curso é o 5.3.0, e eu aconselho fortemente que você use a mesma versão.
+
+[02:07] Mais uma coisa que nós precisamos adicionar, é um outro pacote, mas é um pacote levemente diferente, é um pacote de desenvolvimento, ou seja, é um pacote que ele vai estar habilitado para os desenvolvedores.
+
+[02:18] Para adicionarmos um pacote de desenvolvimento, temos que vir aqui um pouco mais embaixo na aba de dev dependencies. Um pouco mais para baixo, logo depois do flutter_lints, na linha 49, nós vamos adicionar um novo pacote e isso está na documentação.
+
+[02:33] E nós vamos adicionar aqui o build_runner, o build_runner que nós estamos usando nessa versão é 2.2.0. Mesmo esquema, sugiro que você use a mesma versão.
+
+[02:46] Então, nós já colocamos aqui os nossos pacotes que vamos precisar. Vou dar um pub get para ele poder atualizar o nosso projeto e uma vez rodado, já está finished. Vamos continuar o nosso pub expect já está finalizado.
+
+[03:04] O nosso BankHttp, o nosso @GenerateMocks não sabe que código é esse. Então, nós precisamos importar um pacote para ele começar a entender que código é esse.
+
+[03:17] Então, eu vou aqui e clicar no próprio @GenerateMocks, apertar os botões "Alt + Enter" e ele vai dizer para mim, pode importar o pacote mockito/notations e esse código vai ser inteligível.
+
+[03:29] Agora já importamos e o @GenerateMocks já está funcional. Só isso que a precisamos? Não, agora vamos usar o pacote build_runner que ele basicamente cria um código em dart para nós, automaticamente. Ele vai criar esse dublê, vai codar para nós. Bem bacana.
+
+[03:48] Então, vou aqui, para podermos utilizar esse build runner, no terminal aqui embaixo. Então, embaixo, aqui no nosso Android Studio vocês vão ver que tem um terminal e no próprio terminal conseguimos ver que estamos no Alubank.
+
+[04:06] Então, eu vou aqui e digitar o código para rodar a criação desse nosso mock. Então, vamos lá. O código está na nossa documentação.
+
+[04:19] O código é flutter pub run build_runner build, pronto, só isso e ele vai começar a criar o nosso novo arquivo de mocks. Esperamos um pouquinho, ele começa a fazer várias ações e no final ele vai falar assim, Succeeded depois de alguns segundo com um output, esse output significa a nossa saída, o nosso novo arquivo.
+
+[04:57] Normalmente o Android Studio demora um pouco para criar. Vocês viram agora que ele apareceu. Normalmente o Android Studio demora um pouco para mostrar que esse arquivo foi criado. Às vezes o Android Studio dá algum problema, então se deu sucesso e ele não apareceu, pode reiniciar o seu Android Studio, que vai aparecer, ou você pode verificar nas pastas físicas mesmo e ver se BankHttp.mocks.dart está criado.
+
+[05:26] Vamos abri-lo para ver o que foi criado? Não se assustem, isso aqui nós não precisamos entender 100% do que está acontecendo, mas é importante que vocês entendam que esse aqui é o nosso dublê do nosso BankHttp.
+
+[05:41] Então, ele basicamente está pegando tudo que o nosso BankHttp faz e criando um fingimento, um dublê, um mock de tudo o que fazemos.
+
+[05:51] Pronto, temos aqui agora o nosso BankHttp mockado. Que legal. Só para termos certeza de que está funcionando, nós podemos testar com no nosso próprio arquivo do BankHttp. Vou aqui, linha 21, depois que acaba o BankHttp, eu vou criar uma void main só para vermos que o nosso mock http existe.
+
+[06:18] Então, criei uma void main aqui e eu vou criar um final vou chamar de httpMockado e ele vai ser equivalente a um Mock, aparecem vários tipos de mock aqui, MockSpec, MockClient e apareceu agora o nosso MockBankHttp.
+
+[06:37] Então, vou em MockBankHttp. Em vez de usar o BankHttp quando nós precisamos nos testes, vamos usar o MockBankHttp, já existe o nosso hpptMockado, "dublezado". "Dublezado" é uma palavra estranha.
+
+[06:57] Nós já sabemos que existe, está tudo funcionando. O que nós precisamos fazer agora? Primeira coisa, eu já vou deletar esse void main, na linha 23, que eu usei só para mostrar para vocês que o MockBankHttp existe e é uma classe, está usável, está aqui no lado esquerdo.
+
+[07:11] Vou fechar. E o que nós precisamos? Nós precisamos entender onde que o nosso BankHttp está sendo usado.
+
+[07:19] Então, vamos aqui, bank_http.dart, ele foi criado aqui, mas onde que nós o usamos? Está sendo usado lá em cima. Se nós olharmos, no nosso projeto, em cima, à direita, nós temos o nosso dólar para reais.
+
+[07:37] Então, vamos no nosso "components > sections" e procurar pelo header.dart. Vamos acessar header.dart e um dos elementos dentro dele, vamos procurar aqui descendo um pouco.
+
+[07:56] Aqui, a partir da linha 61 nós temos um FutureBuilder que está procurando o BankHttp e está usando o método dólar para real que é esse método da nossa classe, linha 9, dolarToReal. Esse método que está fazendo toda a conexão http.
+
+[08:17] Então, é lá no header que nós estamos usando o BankHttp para poder acessar essa informação toda. É um FutureBuilder, então, caso essa informação não exista, ele vai deixar um círculo de progresso CircularProgressIndicator. Caso existe ele vai vir aqui embaixo e printar na nossa coluna os valores que é o que nós estamos vendo na nossa tela do nosso projeto.
+
+[08:38] Poxa, legal, é aqui que está sendo usado o nosso BankHttp. Então, no caso, quando eu fizer o nosso teste, eu posso, em vez de usar o BankHttp, usar o MockBankHttp. Seria isso? Não sei, vamos ver isso daqui a pouco.
+
+@@04
+Aplicando o Mock
+
+[00:00] Então, nós entendemos que nosso BankHttp está sendo usado no header e nós já criamos o nosso dublê. Só que nós não podemos, simplesmente, vir aqui e adicionar o nosso dublê no nosso header. "Por quê, Kako?".
+[00:16] Porque aqui é onde está o nosso projeto verdadeiro, nós não queremos um dublê no projeto verdadeiro. Nós queremos um dublê apenas no nosso teste.
+
+[00:25] Então, o dublê não é para estar dentro do projeto, é para estar dentro do teste e como nós podemos fazer para isso funcionar?
+
+[00:31] Vamos voltar no nosso teste? Então, eu vou aqui nosso home_test.dart e o nosso home_test.dart, se nós dermos uma olhada, a primeira coisa que nós fazemos no nosso testes de widget é buildar, desenhar, a tela e desenhar essa tela nós precisamos do home.
+
+[00:47] Vamos dar uma olhada rápida no home só para nós recapitularmos. O nosso home, quando nós abrimos aqui ele é um Stateless widget e tem quatro children. Um desses children é quem? É o Header e dentro do Header nós já sabemos, tem o nosso BankHttp.
+
+[01:03] Ok, então, nós sabemos que o home é o pai do nosso header e o header é onde está sendo usado o nosso BankHttp. Como é que nós fazemos para avisar no nosso teste, deixa eu vir aqui para o nosso home_test.dart, o que nós fazemos aqui?
+
+[01:21] Teste é o seguinte, eu quero Home que você avise, eu vou até deixar aqui um comentário (/*Avisar que isso é um teste lá para o header*/). Como é que nós fazemos para o home que é o nosso widget que estamos usando no teste.
+
+[01:45] Como é que nós fazemos para o home avisar para o header que isso aqui é um teste? Nós criamos algumas dependências e é isso que nós vamos fazer agora.
+
+[01:55] Vamos lá, eu vou deixar esse comentário aqui assim, por enquanto, para nós não esquecermos e vamos voltar no header.
+
+[02:02] Aqui no nosso header, na linha 62, nós estamos usando o BankHttp e eu não quero mais usar esse BankHttp aqui nesse instante. O que eu quero? Eu quero receber a informação. Se isso aqui vai ser o BankHttp ou se esse aqui vai ser o dublê.
+
+[02:19] Como é que nós fazemos isso? Vamos subir lá para o início onde nós construímos o nosso StatefulWidget, linha 5, e quero criar um final. Qual é o tipo desse final?
+
+[02:33] Esse final é Future<String>. "Kako, por que é um future string esse final que você criou?". Já vou explicar. Vou nomear como API. Por que é um Future String? Vamos dar uma olhada lá no nosso BankHttp.
+
+[02:48] O BankHttp, nós estamos usando um método chamado dolarToReal que ele é o quê? Future String, ele está enviando para nós uma String que demora um tempo, porque é uma conexão API.
+
+[03:02] Então, vamos voltar lá no nosso header e nós estamos esperando essa API. Agora que nós temos esse final, nós precisamos avisar toda vez que nós instanciarmos um header, ele precisa receber essa API.
+
+[03:15] Então, eu vou no nosso construtor, linha 6, e vou falar required this.api. Então, toda a vez que nós formos iniciar o nosso header, ele vai receber esse Future API.
+
+[03:30] Só isso? Não, nós precisamos alterar aqui embaixo. Deixa eu descer um pouco, na nossa linha 63, no nosso Future, e em vez de usar aqui o BankHttp, eu vou falar precisamos da API this.api. No caso é widget.api. Todo mundo erra, eventualmente, acontece.
+
+[03:55] widget.api, pronto, agora nós estamos esperando a nossa API e nós podemos escolher entre ser o mock e ser verdadeiro no nosso header
+
+[04:05] Então, quem é que está com erro agora? Nosso home. Lá no home, quando nós instanciamos o header, ele pede por essa API.
+
+[04:14] Ele está precisando de uma API que é required. Nós podemos vir aqui e falar que é o BankHttp ou MockBankHttp? Não, é aqui que nós vamos alterar. Nós temos que enviar essa informação para o nosso home, que precisa receber essa informação.
+
+[04:29] Então, nós temos que fazer exatamente a mesma coisa no home. Aqui na linha 8 do nosso Home, que é StatelessWidget dessa vez. Eu vou falar home você precisa de um final e esse final vai ser um Future<String> e o nome dele vai ser api também.
+
+[04:51] E como nós fizemos agora a pouco no header, nós precisamos que você receba esse API required this.api e coloque um valor nessa API para nós.
+
+[05:02] E o que nós precisamos agora? Falar que o nosso header vai receber a informação do nosso home. Então, o nosso API agora precisa de um this.api.
+
+[05:13] "Mas, Kako, está vermelho na linha 19, tem um problema". Esse é um problema padrão. Nós falamos anteriormente, no nosso projeto, que isso seria constante, e não é mais constante.
+
+[05:26] Você está recebendo uma informação variável. Então vou tirar o const da linha 18 e ele vai parar de brigar conosco e todos agora vão ficar pedindo para ser constantes.
+
+[05:37] Isso é uma boa prática que o próprio Android Studio faz para nós, não tem problema, mas tranquilo, apertei os botões "Ctrl + Alt + L", só para indentar e o nosso header está recebendo a informação da API do nosso home.
+
+[05:51] Quem é que cria o home? Vamos lá no main? Agora o main está com erro, linha 19, porque o Home precisa receber API.
+
+[05:58] Nós estamos trazendo de cima mesmo essa decisão se vai ser mock ou não. Estamos criando muita dependência aqui, inclusive.
+
+[06:07] A primeira coisa que eu vou fazer é tirar esse const daqui que nós temos na nossa linha 19, antes do Home e agora o nosso Home está pedindo por uma API do tipo Future<String>. Qual vai ser essa API? No caso aqui, na nossa main, eu estou colocando o BankHttp verdadeiro.
+
+[06:31] BankHttp().dolarToReal() que é um Future String. Agora sim esse BankHttp().dolarToReal() vai descer do home para o header, linha 18, do header vai descer até o nosso future builder na linha 63 e vai ser usado.
+
+[06:55] No final das contas não mudamos nada, mas e o nosso teste? Vamos conferir nosso teste? Como é que nós fazemos essa alteração no nosso teste? Deixa eu abrir home_test.dart, aqui que nós acabamos de deixar um comentário na linha 50, o nosso teste de widget de deposit.
+
+[07:18] O home agora está com erro. Ele está falando, "Nós precisamos de uma API". Todos os homes que nós já escrevermos até agora vão ficar falando, "Nós precisamos de uma API" e que API é essa?
+
+[07:27] Vamos vir aqui, (api) e vou colocar o nosso (api: MockBankHttp().dolarToReal()). Agora sim ele está recebendo o nosso objeto dublê, o nosso objeto mockado e ele não vai ter tanto erro em relação a comunicação http ou a nossa API. Que bacana.
+
+[07:52] Então, antes da nós terminarmos essa aula, o que nós precisamos fazer? Os nossos testes todos estão em vermelho, porque o home precisa de uma API. No caso, o nosso mock.
+
+[08:04] Então, vamos copiar na linha 51 uma api: MockBankHttp().dolarToReal() e vou colocar em todos os nossos outros testes de widget.
+
+[08:17] Aqui dentro do nosso teste de BoxCard, dentro do nosso teste de AccountStatus, dentro do nosso teste de LinearProgresseIndicator e dentro do nosso teste do texto Spent. Coloquei em todos eles. Que legal.
+
+[08:31] Será que agora, então, os nosso testes passam? Vamos testar? Vou aperar o botão Run, na linha 8, e vamos ver se os nossos testes passam.
+
+[08:40] Pela minha cara deu para ver que não ia passar. Pois é, os testes não vão passar, porque tem mais uma coisa crucial que nós precisamos fazer quando estamos mockando testes e essa crucial se chama stubs e nós vamos ver a seguir.
+
+@@05
+Criando Stubs
+
+[00:00] Nós acabamos de fazer o nosso mock e implementamos ele nos nossos testes, porém todos os testes falharam. Por que isso aconteceu? Vamos dar uma olhada no nosso console? Que ele explica um pouco do porquê que os testes falharam.
+[00:18] Vamos dar uma olhada aqui, os nossos testes dizem, No stub was found, ele está dizendo que não existe um stub para o método que nó chamamos. Qual método? dolarToReal. O que isso significa? Vamos conferir lá no nosso dolarToReal.
+
+[00:35] Então, vamos voltar no nosso documento bank_http.dart e aqui no nosso método dolarToReal, ele faz várias coisas para chamar o http, conectar e ele busca um valor. Quando ele encontra esse valor, ele retorna um valor que é uma string, no caso essa string demora um pouco, por isso Future<String>.
+
+[00:56] Então, ele retorna essa string. Opa, então, ele retorna um valor, precisamos desse valor para quê? Esse valor é necessário para construir na nossa tela a relação entre o dólar e o real.
+
+[01:09] Aqui a direita em cima, no nosso projeto, vocês conseguem ver que está aqui, R$ 5,2192, que é o valor que foi pego pela nossa API.
+
+[01:18] Então, ele retorna um valor e esse valor é necessário para construir a tela. Então, no nosso teste a falta desse valor fez falta, esse valor fez falta.
+
+[01:29] Então, nós precisamos dizer que quando usarmos esse método do dolarToReal, vamos retornar um valor.
+
+[01:39] Então, vou criar aqui com vocês para nós entendermos com facilidade o que é o stub. Vou criar um novo teste, vai ser um teste de widget, porque nós vamos construir essa nossa tela, então, vai ser um teste que nós vamos testar o nosso mock
+
+[01:54] Então, vai ser 'Testing MockHttp dolarToReal', linha 61, uma descrição simples. Vou mudar o nome do nosso tester para tester padrão. Vou tirar o nosso arrow type para uma chaves, linha 62.
+
+[02:17] Vamos ver aqui, deixar ele assíncrono, coisa que nós já fizemos aqui e já entendemos como funciona. Um ponto e vírgula, linha 62.
+
+[02:26] Normalmente a primeira coisa que nós fazemos é o quê? Nós chamamos um await tester.pumpWidget para construir a nossa tela.
+
+[02:34] Antes disso nós vamos criar um stub. Então, vou explicar essa construção do stub e eu mostro para vocês exatamente o que é o stub.
+
+[02:43] Primeiramente, para construir um stub, nós vamos precisar de uma nova função. Função when, a função when fica de olho em um método que vai ser chamado durante o nosso teste. Que método que nós estamos buscando? Esse método é o nosso MockBankHttp().dolarToReal().
+
+[03:04] Quando esse método for ativado, for usado no nosso teste, eu preciso enviar e retornar alguma coisa. Como é que eu digo que eu preciso retornar alguma coisa?
+
+[03:16] Para isso nós vamos usar mais uma função que é a thenAnswer e para isso é só você apertar no ponto e vai abrir para você algumas opções de toString e temos aqui thenAnswer e thenReturn, thenThrow.
+
+[03:31] Enfim, tem vários tipos e em alguns momentos nós usamos o thenReturn, em outros os thenAnswer. Para o nosso caso ser do tipo Future e do tipo assíncrono, o ideal é usar o thenAnswer que é o que nós vamos usar agora.
+
+[03:44] Mas isso também está muito bem explicado na documentação do Mockito, só vocês darem uma olhada e se tiverem dúvida pode falar comigo no fórum.
+
+[03:53] Então, thenAnswer e ele vai falar o seguinte, uma vez que nós usamos o nosso método dolarToReal, ele vai nos enviar um valor.
+
+[04:05] Então, para facilitar a nossa a vida eu vou deletar esse nome realInvocation, isso aqui é um call back, realInvocation vai ser só um nome privado, com um underline, vai ser do tipo assíncrono, porque vai demorar para esse valor vir e ele vai nos dar um valor simples de '5'.
+
+[04:29] O que significa? Significa que no nosso teste, quando o MockHttp que é o nosso dublê que não faz nada, de fato, ele for chamado, o nosso teste vai dizer, "Quando esse método for chamado você vai responder com 5". O que significa que no nosso teste o valor a ser lido pelo robô seria 5 aqui em cima do dolarToReal.
+
+[04:55] Isso aqui é um stub que é basicamente um dublê que recebe uma resposta. Então, um dublê está ali aparecendo para se encaixar na dependência e a resposta desse dublê é dada pelo stub, isso é um stub.
+
+[05:12] Então, agora nós vamos continuar o nosso teste de widgets. Qual é o próximo passo padrão que fazemos? Nós fazemos o pumpWidget para nós construirmos a nossa tela.
+
+[05:23] Então, eu vou aqui da linha 51 a 55, copiar esse texto inteiro do pumpWidget, que nós fizemos várias vezes. Então, eu não quero perder muito tempo. Vou vir aqui no pumpWidget.
+
+[05:36] Agora o que nós precisamos fazer é verificar se, de fato, durante todo esse pumpWidget, esse teste, se o nosso MockBankHttp().dolarToReal()foi chamado mesmo.
+
+[05:50] Para verificar é muito simples, tem uma função chamada verify que vamos verificar qual é a função que foi chamada. Mesma coisa MockBankHttp().dolarToReal() e ele está verificando se ela foi chamada.
+
+[06:06] Porém, nós precisamos comparar, ter um matcher ali. Quantas vezes essa função foi chamada? E para isso podemos vir aqui e apertar o ponto e ele vai abrir para mais algumas opções e a opção que nós vamos usar é a called.
+
+[06:22] E ele vai perguntar, ele vai comparar quantas vezes essa função foi chamada. Então, vai perguntar no nosso matcher, "Quantas vezes foi chamada essa função?"
+
+[06:31] No nosso caso essa função foi chamada apenas uma vez, em todo o nosso projeto nós só a usamos em um lugar. Então só vai ser chamada uma vez. "Terminamos, professor".
+
+[06:44] Não, não terminamos. Tem um detalhe importante que nós esquecemos. Eu deixei esse erro de proposito para nós não perdemos o costume, o hábito de ficar sempre de olho no dart.
+
+[06:56] O que está acontecendo no nosso teste? Olha só, nós usamos o when e no when nós criamos uma instancia aqui do MockBankHttp. No nosso tester.pumpWidget, nós criamos de novo esse MockBankHttp e no verify nós criamos, de novo, esse nosso MockBankHttp.
+
+[07:19] Cada um desses três é uma instancia. Então funciona como se fossem indivíduos diferentes. O when nunca vai conseguir encontrar o mesmo objeto, o mesmo indivíduo que foi criado no nosso pumpWidget ou foi verificado, não vai conseguir verificar o mesmo indivíduo.
+
+[07:42] Eles são iguais? São a mesma classe, mas não são os mesmos indivíduos. Como é que nós podemos fazer para resolver isso? Para isso nós podemos criar uma instancia única.
+
+[07:52] Eu subir e vou no nosso void main. Vou criar, linha 11, um final MockBankHttp e vou chamá-lo de httpMock, e ele vai ser igual a nosso instancia única MockHttpBank.
+
+[08:12] Então, tudo o que eu fiz foi instanciar em um único indivíduo chamado httpMock e agora eu posso ir lá embaixo, de volta ao nosso teste, e em vez de usar MockBankHttp, linha 65, em todos eles, eu vou, simplesmente, chamar o nosso indivíduo que é o httpMock que nós nomeamos lá em cima.
+
+[08:33] Então, eu vou mudar para todo mundo e assim todo mundo vai analisar e verificar e criando o mesmo indivíduo.
+
+[08:44] Agora nós podemos verificar se esse teste está passando. Vamos ver se passa? Vou clicar no número da linha 64 e esperar.
+
+[08:54] Passou, quer dizer, então, que o nosso objeto foi criado, foi verificado e não tivemos o problema da API.
+
+[09:05] Então, parabéns, você conseguiu entender como está funcionando, só que os outros testes ainda estão com o MockBankHttp, eles não estão com os stubs.
+
+[09:15] Então, eu sugiro, eu desafio, na verdade, vocês a virem aqui nos outros testes de widget e começarem a colocar os stubs em cada um deles e usar o mesmo indivíduo para todos eles que seria o nosso httpMock.
+
+[09:30] E assim todos os testes vão passar totalmente mockados com dublês sem problema nenhum de comunicação com a API. Que bom que vocês gostaram. Vejo vocês daqui a pouco. Tchau.
+
+@@06
+Faça como eu fiz: Mockito - eu escolho você!
+PRÓXIMA ATIVIDADE
+
+Tá na hora de você contratar seu Dublê! Brincadeiras à parte, é importante agora praticar as implementações que fizemos ao longo desta aula.
+Vamos aplicar o que aprendemos para produzir um Mock:
+
+Adicionar o pacote do mockito (5.3.0) e o build_runner (2.2.0);
+Usar o código de gerar Mock na classe que deseja um dublê;
+Rodar o código do build_runner no terminal e esperar o arquivo .mock ser criado;
+Alterar as dependências para poder relatar ao teste se há um dublê ou não;
+Adicionar um Stub caso seu método mockado tenha retorno (desafio que eu mencionei no vídeo!).
+Partiu?
+
+Nessa atividade, a intenção é que você consiga produzir um Mock por conta própria.
+Assim, caso queira ver a implementação, acesse o repositório do projeto no Github.
+
+Ao gerar um Mock com o build_runner você deve ter cuidado e calma, pois nem sempre o Android Studio acompanha quando o arquivo é criado, fique de olho na pasta para garantir que seu código foi gerado.
+Sobre o desafio com os stubs, você pode consultar a explicação disso no próximo vídeo!
+
+Dúvida? Chame a gente no fórum!
+
+https://github.com/alura-cursos/alura_flutter_curso_7/archive/refs/heads/Aula_5.zip
+
+@@07
+Finalizando os testes
+
+[00:00] Na última aula eu joguei um desafio para vocês, mas eu quero deixar um gabarito para não termos muita confusão em relação ao nosso stub e todos os outros testes.
+[00:11] Afinal, o nosso último teste passou, mas os outros testes não estão passando. Então, por exemplo, se eu vier testar o nosso Deposit, o nosso teste de Deposit, ele não vai passar, porque ele não em o stub.
+
+[00:24] Então, vamos produzir um stub para ele também. Eu vou fazer isso para todos eles. Vou vir aqui e vou na linha 65, vou copiar o stub que nós fizemos. Lembrando que o stub é a função when que fica verificando se o método dolarToReal foi chamado. Quando ele for chamado, ele vai responder automaticamente "5".
+
+[00:47] Vou colocar a mesma coisa no nosso teste de widget do deposit em cima do await, antes do pump, porque ele precisa receber essa função antes do nosso dolarToReal ser chamado. Ele vai ser chamado dentro do Home, lá vem o header e vem sendo chamado o nosso dolarToReal.
+
+[01:10] Importante que o stub esteja antes da chamada da função. Vou colocar isso. Também tem a diferença de que aqui estamos usando o nosso MockBankHttp e queremos usar o mesmo indivíduo. Vou na linha 56 em hpttpMock para usar também.
+
+[01:27] Não precisamos de mais nada. Vou fazer a mesma coisa em todos os outros. Vamos lá, coloca uma música aí. Eu vou colocar aqui finds five box, BoxCard, mesma coisa em cima já temos o httpMock, mesma coisa aqui em cima. Vamos lá, linha 31, vou subir, colocar, apertar os botões "Ctrl + V".
+
+[01:54] Colocar mais um stub na linha 34, mais uma vez mudar o nosso mock para o nosso indivíduo httpMock. Fazendo a mesma coisa para o LinearProgressIndicator. É só trabalho braçal mesmo.
+
+[02:11] Mesma coisa para o nosso home, vou colocar o httpMock, na linha 26. Então, já deu para entender que o nosso mock está ali só para dar uma aparecida e ele não faz nada e no caso do nosso stub, ele pelo menos, retorna um valor desse *mock.
+
+[02:28] Vamos mais uma vez no nosso home, na linha 17, httpMock e foi. Todos os testes foram. Vamos só verificar se todos os testes estão passando agora. É sempre importante ver se os testes estão passando.
+
+[02:45] Um teste não passou, teve um teste que não passou. Unexpected number of calls. Ele esperou uma chamada, mas na verdade foram chamadas seis vezes o nosso dolarToReal. Por quê? Porque nós temos vários testes e ele acabou chamando várias vezes durante todo esse nosso home test a função dolarToReal.
+
+[03:11] Vou até verificar e recapitular. Lembra que nosso testando MockHpttp.dolarToReal, nós usamos uma função chamada verify que verifica se esse nosso método foi chamado e se ele foi chamado apenas uma vez?
+
+[03:30] No caso, agora, ele foi chamado seis vezes, porque nós fizemos vários testes e esse mesmo indivíduo chamou o mesmo método seis vezes. Então, agora o teste vai ter que ser alterado. Então, é importante termos essa noção da função called quando nós estamos buscando funções que foram chamadas no nosso teste.
+
+[03:54] Mais uma vez vamos verificar se o teste passa agora. Não preciso rodar todos, porque todos passaram, menos esse último, só que agora ele não passou. Por quê? Porque eu rodei ele sozinho.
+
+[04:05] Vocês estão conseguindo entender como que os testes, quando eles estão todos no mesmo arquivo, são dependentes? É importante vocês terem isso em mente também. Vou rodar o main, linha 9, completamente e agora todos os testes passam.
+
+[04:19] Ficou mais claro? Ficou mais tranquilo? Que bom. "Testes" é um tema muito completo, muito extenso e vocês viram, não fizemos um teste nem de 10% de todo esse programa que é pequeno. Faltou testar todos os outros widgets, headers, textos, ações do transfer.
+
+[04:41] Faltou criarmos um teste de unidade só para o nosso httpMock. Podemos criar um teste de unidade, não precisa, necessariamente, criar o pump widget. Não precisamos usar o widget para testar se a função foi chamada. Podemos só chamá-la e verificar se está sendo chamada tranquilamente.
+
+[05:02] Existem muitas coisas que podemos fazer com testes, isso aqui é só o começo. Então, dá para explorar bastante os testes com o que vocês aprenderam até aqui. Muito obrigado.
+
+@@08
+Projeto final do curso
+PRÓXIMA ATIVIDADE
+
+Caso queira, você pode baixar aqui o projeto completo implementado neste curso.
+E se preferir, você também pode acessar o repositório completo no GitHub.
+
+https://github.com/alura-cursos/alura_flutter_curso_7/archive/refs/heads/Aula_5.zip
+
+https://github.com/alura-cursos/alura_flutter_curso_7/tree/master
+
+@@09
+O que aprendemos?
+PRÓXIMA ATIVIDADE
+
+Vamos dar um replay no que aprendemos? Nessa aula, adicionamos ações no nosso teste e produzimos um Mock com Stub. Além disso, entendemos com mais clareza as relações de dependências nos testes:
+Ações:
+Quando testamos nosso aplicativos, nos deparamos com ações de interação com botões, caixas de texto, scrollables entre outros. As ações são instruções que damos ao nosso tester para interagir com certos Widgets a fim de verificar sua usabilidade.
+
+Utilizar mocks:
+Aprendemos que o Mock é usado para criar um dublê de dependências externas (como API’s ou bancos de dados fora do projeto) e que ele evita que tenhamos flaky tests.
+
+Operar com Stub:
+Descobrimos que não basta apenas criar um dublê, precisamos que esse dublê, em alguns casos, nos dê um retorno de valor utilizável, e o Stub é feito para retornar esse valor em nome do Dublê.
+
+Entender as dependências nos testes
+Agora que começamos a entrar mais a fundo nos testes, conseguimos ver com maior facilidade o quanto as dependências entre nossas Classes, métodos e Widgets podem ser complicadas, especialmente em testes automatizados.
+
+Parabéns! Você finalizou mais um curso de Flutter! Agora você já está um passo mais perto de se tornar um(a) profissional na produção de aplicativo!
+
+Conta pra gente o que você achou desse curso, seu feedback é extremamente importante para que a qualidade dos cursos de Flutter seja sempre encantadora.
+
+Ah, e não esquece de entrar no Discord, na nossa comunidade de Mobile e mandar um oi pra gente lá! Estamos ansiosos para te conhecer. :)
+Até a próxima!
+
+@@10
+Conclusão
+
+[00:00] Olha só o quanto que nós aprendemos nesse curso. Começamos a entender o que são testes, para que funcionam. Depois nós demos uma olhada nesse nosso projeto chamado Alubank com algumas implementações que nós podemos depositar e transferir.
+[00:16] Depois nós demos uma entendida em como que funciona o estado desse nosso projeto, mini gerenciamento de estado em que usamos o inherited widget, criamos um *bank_inherited *, um modelo de banco e depois começamos a entrar, de fato, nos testes.
+
+[00:35] Aprendemos sobre testes unitários. Deixa eu abrir para vocês poderem ver a nossa pasta de testes. Nós criamos os testes unitários para o nosso bank model. Entendemos os nossos testes unitários, como é que esperamos um valor, é uma coisa mais simples.
+
+[00:52] Saímos testando várias possibilidades aqui no nosso bank model e depois, no nosso teste de unidade. Nós começamos a entender melhor os testes de widget, que são um pouco mais complexos, um pouco melhores em qualidade, mas também demoram um tempo maior para serem feitos, até porque nós precisamos desenhar na tela.
+
+[01:15] Então, aprendemos alguns conceitos como pump e usamos até o pumpWidget, ou o pumpOnSale. Depois disso tudo começamos a entender a questão do finder que é uma forma de encontrar os widgets ou objetos que estamos buscando na nossa tela.
+
+[01:31] E podem ser de vários tipos diferentes, como texto ou por predicado ou por chave ou por tipo. Então, várias formas de encontrar os nosso widgets.
+
+[01:44] Depois nós entendemos um pouco melhor como funcionam os matchers, como podemos comparar os nossos resultados. Pode encontrar um widget só, não encontrar nenhum widget, encontrar vários widgets diferentes, vários números de widgets diferentes*.
+
+[01:57] Por fim, nós começamos a adentrar um pouco nas questões de ações que o nosso tester, o nosso robô, pode fazer para mudar o nosso projeto, interagir com o nosso projeto e ver se essa interação está certa.
+
+[02:14] E só para finalizar, nós entendemos as questões de dublês que contemplam o mock. Antes de finalizar esse curso, de fato, de testes, eu queria conversar com vocês sobre a grande importância dos testes.
+
+[02:27] Nós começamos esse curso sem saber nada e tinha até a história de que nós éramos desenvolvedores e projetamos um aplicativo por vários meses e lançamos e deu muito bug, deu muito problema e os testes eram a solução para evitar que o nosso projeto tenha muitos bugs.
+
+[02:49] Então, o que eu quero que vocês entendam com esse curso, especificamente, não é só o conteúdo, mas a importância que os testes têm quando nós estamos produzindo algo de qualidade.
+
+[03:01] Então, se você busca ser um profissional na área de Flutter, de programa em geral, eu aconselho fortemente que você crie o hábito de construir testes nos seus projetos. Assim você garante a qualidade deles e facilita, futuramente, quando você quiser entendê-los.
+
+[03:22] Vamos ser sinceros, depois de um tempo nós vamos esquecendo o que nós implementamos em um projeto antigo. Então, os testes estão aqui para nos ajudar e eles podem até ser um pouco mais difíceis e um pouco trabalhosos, mas eles valem muito a pena, não só para qualidade do seu produto, mas para a sua qualidade de vida, de entendimento daquilo que você criou.
+
+[03:45] Então, mais uma vez, muitíssimo obrigado, esse curso não foi feito só por mim, mas por uma equipe inteira e cheirosa do time de mobile da Alura.
+
+[03:54] Qualquer coisa que vocês tenham gostado, podem nos falar lá no fórum que vamos repetir e aquilo que vocês não gostaram, podem nos falar também que nós vamos tentar evitar ao máximo. Muito obrigado e eu vejo vocês no próximo curso.
+
